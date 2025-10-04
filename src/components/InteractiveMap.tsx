@@ -246,6 +246,52 @@ export const InteractiveMap = ({ mapImage, title, patternOptions, explorerType }
     }
   };
 
+  const exportToCSV = () => {
+    if (tags.length === 0) {
+      toast({
+        title: "No data to export",
+        description: "Please tag some patterns first.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Create CSV header
+    const headers = ['Pattern Type', 'X Coordinate', 'Y Coordinate', 'Notes'];
+    
+    // Create CSV rows
+    const rows = tags.map(tag => [
+      tag.type,
+      tag.x.toFixed(2),
+      tag.y.toFixed(2),
+      tag.notes || ''
+    ]);
+
+    // Combine headers and rows
+    const csvContent = [
+      headers.join(','),
+      ...rows.map(row => row.map(cell => `"${cell}"`).join(','))
+    ].join('\n');
+
+    // Create blob and download
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    
+    link.setAttribute('href', url);
+    link.setAttribute('download', `${explorerType}-patterns-${new Date().toISOString().split('T')[0]}.csv`);
+    link.style.visibility = 'hidden';
+    
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    toast({
+      title: "Export successful!",
+      description: `Exported ${tags.length} pattern(s) to CSV.`,
+    });
+  };
+
   const SidebarContent = () => (
     <>
       <div className="p-6 border-b border-border/50">
@@ -423,9 +469,15 @@ export const InteractiveMap = ({ mapImage, title, patternOptions, explorerType }
           </Sheet>
 
           {/* Export - Hidden on mobile */}
-          <Button variant="outline" size="sm" className="hidden lg:flex">
+          <Button 
+            variant="outline" 
+            size="sm" 
+            className="hidden lg:flex"
+            onClick={exportToCSV}
+            disabled={tags.length === 0}
+          >
             <Save className="w-4 h-4 mr-2" />
-            Export
+            Export CSV
           </Button>
         </div>
       </div>
