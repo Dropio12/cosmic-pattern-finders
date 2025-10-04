@@ -1,10 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Facebook, Twitter, Instagram, Linkedin, Mail } from "lucide-react";
-
 export const Footer = () => {
-  return (
-    <footer className="bg-card border-t border-border py-16">
+  return <footer className="bg-card border-t border-border py-16">
       <div className="container mx-auto px-6">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
           {/* Logo & Description */}
@@ -67,11 +65,7 @@ export const Footer = () => {
               Get notified about new discoveries
             </p>
             <div className="flex gap-2">
-              <Input
-                type="email"
-                placeholder="your@email.com"
-                className="bg-muted/50 border-border"
-              />
+              <Input type="email" placeholder="your@email.com" className="bg-muted/50 border-border" />
               <Button variant="default" size="icon">
                 <Mail className="w-4 h-4" />
               </Button>
@@ -81,9 +75,8 @@ export const Footer = () => {
 
         <div className="border-t border-border pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-muted-foreground">
           <p>&copy; {new Date().getFullYear()} Space Explorer. All rights reserved.</p>
-          <p>Built with AI • Powered by community</p>
+          
         </div>
       </div>
-    </footer>
-  );
+    </footer>;
 };
