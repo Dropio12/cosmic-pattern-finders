@@ -21,14 +21,14 @@ const achievements = [
     title: "Discovery Pioneers",
     description: "First to identify unique pattern formations",
     count: 45,
-    color: "text-success"
+    color: "text-amber-400"
   },
   {
     icon: Zap,
     title: "Speed Champions",
     description: "Fastest verified pattern identification times",
     count: 89,
-    color: "text-orange-400"
+    color: "text-orange-600"
   }
 ];
 
