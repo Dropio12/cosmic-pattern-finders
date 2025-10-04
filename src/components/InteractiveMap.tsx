@@ -1,11 +1,12 @@
 import { Button } from "@/components/ui/button";
-import { ZoomIn, ZoomOut, Circle, Square, Pentagon, MapPin, Save, Trash2, Info, Menu, X } from "lucide-react";
+import { ZoomIn, ZoomOut, Circle, Square, Pentagon, MapPin, Save, Trash2, Info, Menu, Eraser } from "lucide-react";
 import { useState } from "react";
 import marsMap from "@/assets/mars-map.jpg";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { useToast } from "@/hooks/use-toast";
 
 type PatternTag = {
   x: number;
@@ -23,17 +24,22 @@ export const InteractiveMap = () => {
   const [mouseCoords, setMouseCoords] = useState({ x: 0, y: 0 });
   const [notes, setNotes] = useState("");
   const [showMobileSheet, setShowMobileSheet] = useState(false);
+  const { toast } = useToast();
 
   const handleMapClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if ((e.target as HTMLElement).closest('.pattern-tag')) {
-      return; // Don't add new tag if clicking on existing tag
+      return; // Don't add new tag if clicking on existing tag when not in eraser mode
     }
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = ((e.clientX - rect.left) / rect.width) * 100;
-    const y = ((e.clientY - rect.top) / rect.height) * 100;
     
-    setTags([...tags, { x, y, id: Date.now(), type: patternType, notes }]);
-    setNotes("");
+    // Only add new tags if not in eraser mode
+    if (selectedTool !== "eraser") {
+      const rect = e.currentTarget.getBoundingClientRect();
+      const x = ((e.clientX - rect.left) / rect.width) * 100;
+      const y = ((e.clientY - rect.top) / rect.height) * 100;
+      
+      setTags([...tags, { x, y, id: Date.now(), type: patternType, notes }]);
+      setNotes("");
+    }
   };
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -46,6 +52,17 @@ export const InteractiveMap = () => {
   const removeTag = (id: number, e?: React.MouseEvent) => {
     e?.stopPropagation();
     setTags(tags.filter(tag => tag.id !== id));
+    toast({
+      title: "Pattern deleted",
+      description: "Tag has been removed from the map.",
+    });
+  };
+
+  const handleTagClick = (id: number, e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (selectedTool === "eraser") {
+      removeTag(id);
+    }
   };
 
   const SidebarContent = () => (
@@ -168,19 +185,30 @@ export const InteractiveMap = () => {
             </Button>
           </div>
 
-          {/* Drawing Tools - Hidden on mobile */}
-          <div className="hidden md:flex items-center gap-1 glass-card px-2 py-1.5 rounded-lg border border-border/50">
+          {/* Drawing Tools */}
+          <div className="flex items-center gap-1 glass-card px-2 py-1.5 rounded-lg border border-border/50">
             <Button
               variant={selectedTool === "pin" ? "default" : "ghost"}
               size="sm"
               onClick={() => setSelectedTool("pin")}
+              title="Pin tool"
             >
               <MapPin className="w-4 h-4" />
+            </Button>
+            <Button
+              variant={selectedTool === "eraser" ? "destructive" : "ghost"}
+              size="sm"
+              onClick={() => setSelectedTool("eraser")}
+              title="Eraser - Click tags to delete"
+            >
+              <Eraser className="w-4 h-4" />
             </Button>
             <Button
               variant={selectedTool === "circle" ? "default" : "ghost"}
               size="sm"
               onClick={() => setSelectedTool("circle")}
+              title="Circle tool"
+              className="hidden md:flex"
             >
               <Circle className="w-4 h-4" />
             </Button>
@@ -188,6 +216,8 @@ export const InteractiveMap = () => {
               variant={selectedTool === "square" ? "default" : "ghost"}
               size="sm"
               onClick={() => setSelectedTool("square")}
+              title="Square tool"
+              className="hidden md:flex"
             >
               <Square className="w-4 h-4" />
             </Button>
@@ -195,6 +225,8 @@ export const InteractiveMap = () => {
               variant={selectedTool === "polygon" ? "default" : "ghost"}
               size="sm"
               onClick={() => setSelectedTool("polygon")}
+              title="Polygon tool"
+              className="hidden md:flex"
             >
               <Pentagon className="w-4 h-4" />
             </Button>
@@ -240,11 +272,12 @@ export const InteractiveMap = () => {
         {/* Map Container */}
         <div className="flex-1 relative overflow-auto bg-black">
           <div
-            className="relative min-h-full cursor-crosshair"
+            className="relative min-h-full"
             style={{
               transform: `scale(${zoom})`,
               transformOrigin: 'center',
-              transition: 'transform 0.2s ease'
+              transition: 'transform 0.2s ease',
+              cursor: selectedTool === "eraser" ? "not-allowed" : "crosshair"
             }}
             onClick={handleMapClick}
             onMouseMove={handleMouseMove}
@@ -259,18 +292,28 @@ export const InteractiveMap = () => {
             {tags.map((tag) => (
               <div
                 key={tag.id}
-                className="absolute w-8 h-8 -translate-x-1/2 -translate-y-1/2 group pattern-tag cursor-pointer"
+                className={`absolute w-8 h-8 -translate-x-1/2 -translate-y-1/2 group pattern-tag ${
+                  selectedTool === "eraser" ? "cursor-pointer" : "cursor-default"
+                }`}
                 style={{ left: `${tag.x}%`, top: `${tag.y}%` }}
-                onClick={(e) => removeTag(tag.id, e)}
+                onClick={(e) => handleTagClick(tag.id, e)}
               >
                 <div className="w-full h-full rounded-full bg-primary/30 animate-ping"></div>
-                <div className="absolute inset-0 w-full h-full rounded-full border-2 border-primary bg-primary/50 group-hover:bg-destructive/50 group-hover:border-destructive transition-colors"></div>
-                <X className="absolute inset-0 m-auto w-4 h-4 text-white opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
-                <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none hidden md:block">
-                  <div className="glass-card px-3 py-2 rounded-lg border border-border/50 text-xs whitespace-nowrap">
+                <div className={`absolute inset-0 w-full h-full rounded-full border-2 transition-colors ${
+                  selectedTool === "eraser" 
+                    ? "border-destructive bg-destructive/50 group-hover:bg-destructive/70" 
+                    : "border-primary bg-primary/50 group-hover:border-primary/70"
+                }`}></div>
+                {selectedTool === "eraser" && (
+                  <Eraser className="absolute inset-0 m-auto w-4 h-4 text-white opacity-70 group-hover:opacity-100 transition-opacity pointer-events-none" />
+                )}
+                <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50">
+                  <div className="glass-card px-3 py-2 rounded-lg border border-border/50 text-xs whitespace-nowrap shadow-lg">
                     <div className="font-semibold text-foreground capitalize">{tag.type}</div>
-                    {tag.notes && <div className="text-muted-foreground">{tag.notes}</div>}
-                    <div className="text-destructive text-xs mt-1">Click to delete</div>
+                    {tag.notes && <div className="text-muted-foreground mt-1">{tag.notes}</div>}
+                    {selectedTool === "eraser" && (
+                      <div className="text-destructive text-xs mt-1 font-medium">Click to delete</div>
+                    )}
                   </div>
                 </div>
               </div>
