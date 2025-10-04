@@ -1,4 +1,3 @@
-import { Header } from "@/components/Header";
 import { InteractiveMap } from "@/components/InteractiveMap";
 import deepspaceMap from "@/assets/deepspace-map.jpg";
 
@@ -29,17 +28,14 @@ const deepspacePatterns = [
 
 const DeepSpaceExplorer = () => {
   return (
-    <>
-      <Header />
-      <div className="fixed inset-0 top-20 bg-background">
-        <InteractiveMap 
-          mapImage={deepspaceMap}
-          title="Deep Space Pattern Explorer"
-          patternOptions={deepspacePatterns}
-          explorerType="deepspace"
-        />
-      </div>
-    </>
+    <div className="fixed inset-0 bg-background">
+      <InteractiveMap 
+        mapImage={deepspaceMap}
+        title="Deep Space Pattern Explorer"
+        patternOptions={deepspacePatterns}
+        explorerType="deepspace"
+      />
+    </div>
   );
 };
 

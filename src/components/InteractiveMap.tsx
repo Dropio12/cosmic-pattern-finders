@@ -1,8 +1,7 @@
 import { Button } from "@/components/ui/button";
-import { ZoomIn, ZoomOut, MapPin, Save, Trash2, Info, Menu, Eraser } from "lucide-react";
+import { ZoomIn, ZoomOut, MapPin, Save, Trash2, Info, Menu, Eraser, ChevronLeft, ChevronRight, Download } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import marsMap from "@/assets/mars-map.jpg";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -38,6 +37,7 @@ export const InteractiveMap = ({ mapImage, title, patternOptions, explorerType }
   const [pan, setPan] = useState({ x: 0, y: 0 });
   const [isPanning, setIsPanning] = useState(false);
   const [panStart, setPanStart] = useState({ x: 0, y: 0 });
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const { toast } = useToast();
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -397,95 +397,9 @@ export const InteractiveMap = ({ mapImage, title, patternOptions, explorerType }
   );
 
   return (
-    <section className="h-full bg-background flex flex-col">
-      {/* Top Toolbar */}
-      <div className="glass-card border-b border-border/50 px-4 md:px-6 py-3 md:py-4 flex items-center justify-between gap-2 md:gap-4 flex-wrap z-10">
-        <div className="flex items-center gap-2">
-          <h1 className="text-lg md:text-2xl font-heading font-bold">{title}</h1>
-          <Badge variant="outline" className="bg-success/10 text-success border-success/20 hidden sm:flex">
-            <div className="w-2 h-2 rounded-full bg-success animate-pulse mr-2"></div>
-            Live
-          </Badge>
-        </div>
-
-        <div className="flex items-center gap-2 md:gap-3 flex-wrap">
-          {/* Zoom Controls */}
-          <div className="flex items-center gap-1 md:gap-2 glass-card px-2 md:px-3 py-1.5 rounded-lg border border-border/50">
-            <Button variant="ghost" size="sm" onClick={() => setZoom(Math.max(zoom - 0.5, 0.5))}>
-              <ZoomOut className="w-4 h-4" />
-            </Button>
-            <span className="text-xs md:text-sm text-muted-foreground min-w-[40px] md:min-w-[50px] text-center">
-              {(zoom * 100).toFixed(0)}%
-            </span>
-            <Button variant="ghost" size="sm" onClick={() => setZoom(Math.min(zoom + 0.5, 20))}>
-              <ZoomIn className="w-4 h-4" />
-            </Button>
-          </div>
-
-          {/* Drawing Tools */}
-          <div className="flex items-center gap-1 glass-card px-2 py-1.5 rounded-lg border border-border/50">
-            <Button
-              variant={selectedTool === "pin" ? "default" : "ghost"}
-              size="sm"
-              onClick={() => setSelectedTool("pin")}
-              title="Pin tool - Click to add tags"
-            >
-              <MapPin className="w-4 h-4" />
-            </Button>
-            <Button
-              variant={selectedTool === "eraser" ? "destructive" : "ghost"}
-              size="sm"
-              onClick={() => setSelectedTool("eraser")}
-              title="Eraser - Click tags to delete"
-            >
-              <Eraser className="w-4 h-4" />
-            </Button>
-          </div>
-
-          {/* Pattern Type Selector */}
-          <Select value={patternType} onValueChange={setPatternType}>
-            <SelectTrigger className="w-[140px] md:w-[180px] glass-card border-border/50 text-xs md:text-sm">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {patternOptions.map((option) => (
-                <SelectItem key={option.value} value={option.value}>
-                  {option.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-
-          {/* Mobile Menu */}
-          <Sheet open={showMobileSheet} onOpenChange={setShowMobileSheet}>
-            <SheetTrigger asChild>
-              <Button variant="outline" size="sm" className="md:hidden">
-                <Menu className="w-4 h-4" />
-              </Button>
-            </SheetTrigger>
-            <SheetContent side="right" className="w-80 p-0 glass-card border-border/50 flex flex-col">
-              <SidebarContent />
-            </SheetContent>
-          </Sheet>
-
-          {/* Export - Hidden on mobile */}
-          <Button 
-            variant="outline" 
-            size="sm" 
-            className="hidden lg:flex"
-            onClick={exportToCSV}
-            disabled={tags.length === 0}
-          >
-            <Save className="w-4 h-4 mr-2" />
-            Export CSV
-          </Button>
-        </div>
-      </div>
-
-      {/* Main Content Area */}
-      <div className="flex-1 flex overflow-hidden">
-        {/* Map Container */}
-        <div className="flex-1 relative overflow-hidden bg-black">
+    <section className="h-full bg-background relative overflow-hidden">
+      {/* Map Container - Full Screen */}
+      <div className="absolute inset-0 bg-black">
           <div
             className="relative min-h-full"
             style={{
@@ -549,26 +463,136 @@ export const InteractiveMap = ({ mapImage, title, patternOptions, explorerType }
           </div>
         </div>
 
-        {/* Right Sidebar - Desktop only */}
-        <div className="hidden md:flex w-80 glass-card border-l border-border/50 flex-col">
-          <SidebarContent />
+      {/* Floating Controls - Top Left: Title */}
+      <div className="absolute top-4 left-4 z-30 glass-card px-4 py-2 rounded-lg border border-border/50 shadow-lg backdrop-blur-md">
+        <h1 className="text-sm md:text-lg font-heading font-bold flex items-center gap-2">
+          {title}
+          <Badge variant="outline" className="bg-success/10 text-success border-success/20 hidden md:flex text-xs">
+            <div className="w-1.5 h-1.5 rounded-full bg-success animate-pulse mr-1"></div>
+            Live
+          </Badge>
+        </h1>
+      </div>
+
+      {/* Floating Controls - Top Right: Zoom & Export */}
+      <div className="absolute top-4 right-4 z-30 flex flex-col gap-2">
+        {/* Zoom Controls */}
+        <div className="glass-card rounded-lg border border-border/50 shadow-lg backdrop-blur-md">
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            onClick={() => setZoom(Math.min(zoom + 0.5, 20))}
+            className="rounded-b-none border-b border-border/30 w-full"
+          >
+            <ZoomIn className="w-4 h-4" />
+          </Button>
+          <div className="px-3 py-1.5 text-xs text-center text-muted-foreground font-mono border-b border-border/30">
+            {(zoom * 100).toFixed(0)}%
+          </div>
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            onClick={() => setZoom(Math.max(zoom - 0.5, 0.5))}
+            className="rounded-t-none w-full"
+          >
+            <ZoomOut className="w-4 h-4" />
+          </Button>
+        </div>
+
+        {/* Export Button - Desktop only */}
+        <Button 
+          variant="outline" 
+          size="sm" 
+          className="hidden lg:flex glass-card shadow-lg backdrop-blur-md"
+          onClick={exportToCSV}
+          disabled={tags.length === 0}
+          title="Export to CSV"
+        >
+          <Download className="w-4 h-4" />
+        </Button>
+      </div>
+
+      {/* Floating Controls - Bottom Left: Coordinates */}
+      <div className="absolute bottom-4 left-4 z-30 glass-card px-4 py-2 rounded-lg border border-border/50 shadow-lg backdrop-blur-md">
+        <div className="text-xs text-muted-foreground font-mono">
+          {mouseCoords.x.toFixed(1)}%, {mouseCoords.y.toFixed(1)}%
         </div>
       </div>
 
-      {/* Mobile Floating Button */}
-      <div className="md:hidden fixed bottom-6 right-6 z-20">
-        <Sheet open={showMobileSheet} onOpenChange={setShowMobileSheet}>
-          <SheetTrigger asChild>
-            <Button size="lg" className="rounded-full w-14 h-14 shadow-lg">
-              <Menu className="w-6 h-6" />
-              {tags.length > 0 && (
-                <Badge className="absolute -top-1 -right-1 w-6 h-6 rounded-full p-0 flex items-center justify-center">
-                  {tags.length}
-                </Badge>
-              )}
+      {/* Floating Controls - Bottom Right: Tools & Pattern Selector */}
+      <div className="absolute bottom-4 right-4 z-30 flex flex-col gap-2 items-end">
+        {/* Pattern Type Selector */}
+        <Select value={patternType} onValueChange={setPatternType}>
+          <SelectTrigger className="w-[160px] md:w-[200px] glass-card border-border/50 shadow-lg backdrop-blur-md text-xs md:text-sm">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent className="z-50">
+            {patternOptions.map((option) => (
+              <SelectItem key={option.value} value={option.value}>
+                {option.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+
+        {/* Drawing Tools */}
+        <div className="flex items-center gap-2">
+          <div className="glass-card px-2 py-1.5 rounded-lg border border-border/50 shadow-lg backdrop-blur-md flex gap-1">
+            <Button
+              variant={selectedTool === "pin" ? "default" : "ghost"}
+              size="sm"
+              onClick={() => setSelectedTool("pin")}
+              title="Pin tool - Click to add tags"
+            >
+              <MapPin className="w-4 h-4" />
             </Button>
-          </SheetTrigger>
-        </Sheet>
+            <Button
+              variant={selectedTool === "eraser" ? "destructive" : "ghost"}
+              size="sm"
+              onClick={() => setSelectedTool("eraser")}
+              title="Eraser - Click tags to delete"
+            >
+              <Eraser className="w-4 h-4" />
+            </Button>
+          </div>
+
+          {/* Mobile Menu FAB */}
+          <Sheet open={showMobileSheet} onOpenChange={setShowMobileSheet}>
+            <SheetTrigger asChild>
+              <Button size="lg" className="md:hidden rounded-full w-12 h-12 shadow-xl">
+                <Menu className="w-5 h-5" />
+                {tags.length > 0 && (
+                  <Badge className="absolute -top-1 -right-1 w-5 h-5 rounded-full p-0 flex items-center justify-center text-xs">
+                    {tags.length}
+                  </Badge>
+                )}
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="right" className="w-80 p-0 glass-card border-border/50 flex flex-col">
+              <SidebarContent />
+            </SheetContent>
+          </Sheet>
+
+          {/* Desktop Sidebar Toggle */}
+          <Button 
+            variant="outline" 
+            size="sm" 
+            className="hidden md:flex glass-card shadow-lg backdrop-blur-md"
+            onClick={() => setSidebarOpen(!sidebarOpen)}
+            title={sidebarOpen ? "Hide sidebar" : "Show sidebar"}
+          >
+            {sidebarOpen ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
+          </Button>
+        </div>
+      </div>
+
+      {/* Right Sidebar - Desktop only, Collapsible */}
+      <div 
+        className={`hidden md:flex absolute top-0 right-0 h-full w-80 glass-card border-l border-border/50 flex-col shadow-2xl backdrop-blur-md transition-transform duration-300 ease-in-out z-40 ${
+          sidebarOpen ? 'translate-x-0' : 'translate-x-full'
+        }`}
+      >
+        <SidebarContent />
       </div>
     </section>
   );
