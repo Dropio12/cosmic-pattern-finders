@@ -285,12 +285,22 @@ export const InteractiveMap = ({ mapImage, title, patternOptions }: InteractiveM
                 {selectedTool === "eraser" && (
                   <Eraser className="absolute inset-0 m-auto w-4 h-4 text-white opacity-70 group-hover:opacity-100 transition-opacity pointer-events-none" />
                 )}
-                <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50">
-                  <div className="glass-card px-3 py-2 rounded-lg border border-border/50 text-xs whitespace-nowrap shadow-lg">
-                    <div className="font-semibold text-foreground capitalize">{tag.type}</div>
-                    {tag.notes && <div className="text-muted-foreground mt-1">{tag.notes}</div>}
+                <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 opacity-0 group-hover:opacity-100 transition-all duration-200 pointer-events-none z-50 scale-90 group-hover:scale-100">
+                  <div className="glass-tooltip px-4 py-2.5 rounded-lg text-xs whitespace-nowrap min-w-[120px]">
+                    <div className="font-semibold text-white capitalize text-sm mb-1">{tag.type}</div>
+                    <div className="text-gray-300 text-xs font-mono opacity-75">
+                      {tag.x.toFixed(1)}%, {tag.y.toFixed(1)}%
+                    </div>
+                    {tag.notes && (
+                      <div className="text-gray-300 mt-2 pt-2 border-t border-white/10 max-w-[200px] whitespace-normal">
+                        {tag.notes}
+                      </div>
+                    )}
                     {selectedTool === "eraser" && (
-                      <div className="text-destructive text-xs mt-1 font-medium">Click to delete</div>
+                      <div className="text-red-400 text-xs mt-2 pt-2 border-t border-white/10 font-medium flex items-center gap-1">
+                        <Trash2 className="w-3 h-3" />
+                        Click to delete
+                      </div>
                     )}
                   </div>
                 </div>
