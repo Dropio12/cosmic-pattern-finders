@@ -25,11 +25,12 @@ export const InteractiveMap = () => {
   const [notes, setNotes] = useState("");
   const [showMobileSheet, setShowMobileSheet] = useState(false);
   const [touchStart, setTouchStart] = useState<{ distance: number; zoom: number } | null>(null);
+  const [isErasing, setIsErasing] = useState(false);
   const { toast } = useToast();
 
   const handleMapClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if ((e.target as HTMLElement).closest('.pattern-tag')) {
-      return; // Don't add new tag if clicking on existing tag when not in eraser mode
+      return;
     }
     
     // Only add new tags if not in eraser mode
@@ -43,11 +44,50 @@ export const InteractiveMap = () => {
     }
   };
 
+  const checkEraseCollision = (mouseX: number, mouseY: number) => {
+    if (selectedTool === "eraser" && isErasing) {
+      const eraserRadius = 20 / zoom; // Eraser size in percentage
+      const toDelete: number[] = [];
+      
+      tags.forEach(tag => {
+        const distance = Math.sqrt(
+          Math.pow(tag.x - mouseX, 2) + Math.pow(tag.y - mouseY, 2)
+        );
+        if (distance < eraserRadius) {
+          toDelete.push(tag.id);
+        }
+      });
+      
+      if (toDelete.length > 0) {
+        setTags(tags.filter(tag => !toDelete.includes(tag.id)));
+      }
+    }
+  };
+
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
     const x = Math.round(((e.clientX - rect.left) / rect.width) * 1000) / 10;
     const y = Math.round(((e.clientY - rect.top) / rect.height) * 1000) / 10;
     setMouseCoords({ x, y });
+    
+    // Check for eraser collision while dragging
+    checkEraseCollision(x, y);
+  };
+
+  const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (selectedTool === "eraser") {
+      setIsErasing(true);
+      const rect = e.currentTarget.getBoundingClientRect();
+      const x = Math.round(((e.clientX - rect.left) / rect.width) * 1000) / 10;
+      const y = Math.round(((e.clientY - rect.top) / rect.height) * 1000) / 10;
+      checkEraseCollision(x, y);
+    }
+  };
+
+  const handleMouseUp = () => {
+    if (isErasing) {
+      setIsErasing(false);
+    }
   };
 
   const removeTag = (id: number, e?: React.MouseEvent) => {
@@ -78,6 +118,12 @@ export const InteractiveMap = () => {
       e.preventDefault();
       const distance = getTouchDistance(e.touches);
       setTouchStart({ distance, zoom });
+    } else if (e.touches.length === 1 && selectedTool === "eraser") {
+      setIsErasing(true);
+      const rect = e.currentTarget.getBoundingClientRect();
+      const x = Math.round(((e.touches[0].clientX - rect.left) / rect.width) * 1000) / 10;
+      const y = Math.round(((e.touches[0].clientY - rect.top) / rect.height) * 1000) / 10;
+      checkEraseCollision(x, y);
     }
   };
 
@@ -88,11 +134,17 @@ export const InteractiveMap = () => {
       const scale = currentDistance / touchStart.distance;
       const newZoom = Math.max(0.5, Math.min(20, touchStart.zoom * scale));
       setZoom(newZoom);
+    } else if (e.touches.length === 1 && selectedTool === "eraser" && isErasing) {
+      const rect = e.currentTarget.getBoundingClientRect();
+      const x = Math.round(((e.touches[0].clientX - rect.left) / rect.width) * 1000) / 10;
+      const y = Math.round(((e.touches[0].clientY - rect.top) / rect.height) * 1000) / 10;
+      checkEraseCollision(x, y);
     }
   };
 
   const handleTouchEnd = () => {
     setTouchStart(null);
+    setIsErasing(false);
   };
 
   const SidebarContent = () => (
@@ -280,10 +332,13 @@ export const InteractiveMap = () => {
               transform: `scale(${zoom})`,
               transformOrigin: 'center',
               transition: 'transform 0.2s ease',
-              cursor: selectedTool === "eraser" ? "not-allowed" : "crosshair"
+              cursor: selectedTool === "eraser" ? "crosshair" : "crosshair"
             }}
             onClick={handleMapClick}
             onMouseMove={handleMouseMove}
+            onMouseDown={handleMouseDown}
+            onMouseUp={handleMouseUp}
+            onMouseLeave={handleMouseUp}
             onTouchStart={handleTouchStart}
             onTouchMove={handleTouchMove}
             onTouchEnd={handleTouchEnd}
