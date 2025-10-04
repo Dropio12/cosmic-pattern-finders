@@ -24,13 +24,11 @@ export const InteractiveMap = () => {
   const [mouseCoords, setMouseCoords] = useState({ x: 0, y: 0 });
   const [notes, setNotes] = useState("");
   const [showMobileSheet, setShowMobileSheet] = useState(false);
-  const [touchStart, setTouchStart] = useState<{ distance: number; zoom: number } | null>(null);
-  const [isErasing, setIsErasing] = useState(false);
   const { toast } = useToast();
 
   const handleMapClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if ((e.target as HTMLElement).closest('.pattern-tag')) {
-      return;
+      return; // Don't add new tag if clicking on existing tag when not in eraser mode
     }
     
     // Only add new tags if not in eraser mode
@@ -44,50 +42,11 @@ export const InteractiveMap = () => {
     }
   };
 
-  const checkEraseCollision = (mouseX: number, mouseY: number) => {
-    if (selectedTool === "eraser" && isErasing) {
-      const eraserRadius = 20 / zoom; // Eraser size in percentage
-      const toDelete: number[] = [];
-      
-      tags.forEach(tag => {
-        const distance = Math.sqrt(
-          Math.pow(tag.x - mouseX, 2) + Math.pow(tag.y - mouseY, 2)
-        );
-        if (distance < eraserRadius) {
-          toDelete.push(tag.id);
-        }
-      });
-      
-      if (toDelete.length > 0) {
-        setTags(tags.filter(tag => !toDelete.includes(tag.id)));
-      }
-    }
-  };
-
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
     const x = Math.round(((e.clientX - rect.left) / rect.width) * 1000) / 10;
     const y = Math.round(((e.clientY - rect.top) / rect.height) * 1000) / 10;
     setMouseCoords({ x, y });
-    
-    // Check for eraser collision while dragging
-    checkEraseCollision(x, y);
-  };
-
-  const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (selectedTool === "eraser") {
-      setIsErasing(true);
-      const rect = e.currentTarget.getBoundingClientRect();
-      const x = Math.round(((e.clientX - rect.left) / rect.width) * 1000) / 10;
-      const y = Math.round(((e.clientY - rect.top) / rect.height) * 1000) / 10;
-      checkEraseCollision(x, y);
-    }
-  };
-
-  const handleMouseUp = () => {
-    if (isErasing) {
-      setIsErasing(false);
-    }
   };
 
   const removeTag = (id: number, e?: React.MouseEvent) => {
@@ -104,47 +63,6 @@ export const InteractiveMap = () => {
     if (selectedTool === "eraser") {
       removeTag(id);
     }
-  };
-
-  // Touch handlers for pinch-to-zoom
-  const getTouchDistance = (touches: React.TouchList) => {
-    const touch1 = touches[0];
-    const touch2 = touches[1];
-    return Math.hypot(touch2.clientX - touch1.clientX, touch2.clientY - touch1.clientY);
-  };
-
-  const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
-    if (e.touches.length === 2) {
-      e.preventDefault();
-      const distance = getTouchDistance(e.touches);
-      setTouchStart({ distance, zoom });
-    } else if (e.touches.length === 1 && selectedTool === "eraser") {
-      setIsErasing(true);
-      const rect = e.currentTarget.getBoundingClientRect();
-      const x = Math.round(((e.touches[0].clientX - rect.left) / rect.width) * 1000) / 10;
-      const y = Math.round(((e.touches[0].clientY - rect.top) / rect.height) * 1000) / 10;
-      checkEraseCollision(x, y);
-    }
-  };
-
-  const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
-    if (e.touches.length === 2 && touchStart) {
-      e.preventDefault();
-      const currentDistance = getTouchDistance(e.touches);
-      const scale = currentDistance / touchStart.distance;
-      const newZoom = Math.max(0.5, Math.min(20, touchStart.zoom * scale));
-      setZoom(newZoom);
-    } else if (e.touches.length === 1 && selectedTool === "eraser" && isErasing) {
-      const rect = e.currentTarget.getBoundingClientRect();
-      const x = Math.round(((e.touches[0].clientX - rect.left) / rect.width) * 1000) / 10;
-      const y = Math.round(((e.touches[0].clientY - rect.top) / rect.height) * 1000) / 10;
-      checkEraseCollision(x, y);
-    }
-  };
-
-  const handleTouchEnd = () => {
-    setTouchStart(null);
-    setIsErasing(false);
   };
 
   const SidebarContent = () => (
@@ -332,16 +250,10 @@ export const InteractiveMap = () => {
               transform: `scale(${zoom})`,
               transformOrigin: 'center',
               transition: 'transform 0.2s ease',
-              cursor: selectedTool === "eraser" ? "crosshair" : "crosshair"
+              cursor: selectedTool === "eraser" ? "not-allowed" : "crosshair"
             }}
             onClick={handleMapClick}
             onMouseMove={handleMouseMove}
-            onMouseDown={handleMouseDown}
-            onMouseUp={handleMouseUp}
-            onMouseLeave={handleMouseUp}
-            onTouchStart={handleTouchStart}
-            onTouchMove={handleTouchMove}
-            onTouchEnd={handleTouchEnd}
           >
             <img
               src={marsMap}
@@ -356,11 +268,7 @@ export const InteractiveMap = () => {
                 className={`absolute w-8 h-8 -translate-x-1/2 -translate-y-1/2 group pattern-tag ${
                   selectedTool === "eraser" ? "cursor-pointer" : "cursor-default"
                 }`}
-                style={{ 
-                  left: `${tag.x}%`, 
-                  top: `${tag.y}%`,
-                  transform: `translate(-50%, -50%) scale(${1 / zoom})`,
-                }}
+                style={{ left: `${tag.x}%`, top: `${tag.y}%` }}
                 onClick={(e) => handleTagClick(tag.id, e)}
               >
                 <div className="w-full h-full rounded-full bg-primary/30 animate-ping"></div>
@@ -372,9 +280,7 @@ export const InteractiveMap = () => {
                 {selectedTool === "eraser" && (
                   <Eraser className="absolute inset-0 m-auto w-4 h-4 text-white opacity-70 group-hover:opacity-100 transition-opacity pointer-events-none" />
                 )}
-                <div 
-                  className="absolute top-full left-1/2 -translate-x-1/2 mt-2 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50"
-                >
+                <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50">
                   <div className="glass-card px-3 py-2 rounded-lg border border-border/50 text-xs whitespace-nowrap shadow-lg">
                     <div className="font-semibold text-foreground capitalize">{tag.type}</div>
                     {tag.notes && <div className="text-muted-foreground mt-1">{tag.notes}</div>}
