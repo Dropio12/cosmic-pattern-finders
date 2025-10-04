@@ -1,5 +1,3 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Trophy, Target, CheckCircle, Zap, Tag } from "lucide-react";
 
 const topContributors = [
@@ -18,80 +16,90 @@ const stats = [
 
 export const Leaderboard = () => {
   return (
-    <section id="leaderboard" className="py-20 bg-muted/30">
-      <div className="container mx-auto px-4">
-        <div className="text-center mb-12">
-          <h2 className="text-4xl md:text-5xl font-heading font-bold mb-4">
-            Your Impact
+    <section id="leaderboard" className="py-32 bg-background relative">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_50%,hsl(142_71%_45%/0.05),transparent_50%)]"></div>
+      
+      <div className="container mx-auto px-6 relative">
+        <div className="text-center mb-16">
+          <h2 className="text-5xl md:text-6xl font-heading font-bold mb-6 tracking-tight">
+            Community Impact
           </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Join our community of planetary explorers making real scientific contributions
+          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+            Real-time metrics from our global network of explorers
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-12">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-16">
           {stats.map((stat, index) => (
-            <Card key={index}>
-              <CardContent className="pt-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm text-muted-foreground mb-1">{stat.label}</p>
-                    <p className="text-3xl font-heading font-bold">{stat.value}</p>
+            <div key={index} className="glass-card rounded-2xl p-8 border border-border/50">
+              <div className="flex flex-col">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className={`w-12 h-12 rounded-xl gradient-cta flex items-center justify-center ${stat.color}`}>
+                    <stat.icon className="w-6 h-6 text-primary-foreground" />
                   </div>
-                  <div className={`w-12 h-12 rounded-lg bg-muted flex items-center justify-center ${stat.color}`}>
-                    <stat.icon className="w-6 h-6" />
-                  </div>
+                  <p className="text-sm font-medium text-muted-foreground">{stat.label}</p>
                 </div>
-              </CardContent>
-            </Card>
+                <p className="text-5xl font-heading font-bold mb-2">{stat.value}</p>
+                <div className="flex items-center gap-2 text-sm text-success">
+                  <div className="w-1 h-1 rounded-full bg-success animate-pulse"></div>
+                  <span>Live</span>
+                </div>
+              </div>
+            </div>
           ))}
         </div>
 
-        <Card className="max-w-3xl mx-auto">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Trophy className="w-5 h-5 text-accent" />
-              Top Contributors
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {topContributors.map((contributor) => (
+        <div className="max-w-4xl mx-auto glass-card rounded-2xl border border-border/50 overflow-hidden">
+          <div className="p-8">
+            <div className="flex items-center gap-3 mb-8">
+              <Trophy className="w-6 h-6 text-primary" />
+              <h3 className="text-2xl font-heading font-bold">Top Contributors</h3>
+            </div>
+            <div className="space-y-1">
+              {topContributors.map((contributor, index) => (
                 <div
                   key={contributor.rank}
-                  className="flex items-center justify-between p-4 rounded-lg hover:bg-muted/50 transition-colors"
+                  className={`flex items-center justify-between p-5 rounded-xl transition-all ${
+                    index < 3 ? 'bg-primary/5 border border-primary/20' : 'hover:bg-muted/30'
+                  }`}
                 >
-                  <div className="flex items-center gap-4">
-                    <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary text-primary-foreground font-bold text-sm">
+                  <div className="flex items-center gap-5">
+                    <div className={`flex items-center justify-center w-10 h-10 rounded-full font-bold ${
+                      index === 0 ? 'gradient-cta text-primary-foreground' : 
+                      index === 1 ? 'bg-muted text-foreground' :
+                      index === 2 ? 'bg-muted/50 text-foreground' :
+                      'bg-muted/30 text-muted-foreground'
+                    }`}>
                       {contributor.rank}
                     </div>
-                    <div className="text-2xl">{contributor.avatar}</div>
-                    <span className="font-medium">{contributor.name}</span>
+                    <div className="text-3xl">{contributor.avatar}</div>
+                    <span className="font-semibold text-lg">{contributor.name}</span>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <Zap className="w-4 h-4 text-accent" />
-                    <span className="font-bold">{contributor.points.toLocaleString()}</span>
-                    <span className="text-sm text-muted-foreground">pts</span>
+                  <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-2">
+                      <span className="text-2xl font-bold">{contributor.points.toLocaleString()}</span>
+                      <span className="text-sm text-muted-foreground">pts</span>
+                    </div>
                   </div>
                 </div>
               ))}
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
 
-        <div className="mt-12 flex flex-wrap justify-center gap-4">
-          <Badge variant="secondary" className="px-4 py-2 text-sm">
-            🏆 Pattern Master
-          </Badge>
-          <Badge variant="secondary" className="px-4 py-2 text-sm">
-            🔬 Scientific Contributor
-          </Badge>
-          <Badge variant="secondary" className="px-4 py-2 text-sm">
-            🌟 Explorer Elite
-          </Badge>
-          <Badge variant="secondary" className="px-4 py-2 text-sm">
-            🚀 Space Pioneer
-          </Badge>
+        <div className="mt-16 flex flex-wrap justify-center gap-3">
+          <div className="glass-card px-5 py-3 rounded-xl border border-border/50">
+            <span className="text-sm font-medium">🏆 Pattern Master</span>
+          </div>
+          <div className="glass-card px-5 py-3 rounded-xl border border-border/50">
+            <span className="text-sm font-medium">🔬 Scientific Contributor</span>
+          </div>
+          <div className="glass-card px-5 py-3 rounded-xl border border-border/50">
+            <span className="text-sm font-medium">🌟 Explorer Elite</span>
+          </div>
+          <div className="glass-card px-5 py-3 rounded-xl border border-border/50">
+            <span className="text-sm font-medium">🚀 Space Pioneer</span>
+          </div>
         </div>
       </div>
     </section>

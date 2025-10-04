@@ -8,81 +8,44 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    --background: 0 0% 98%;
-    --foreground: 231 65% 15%;
+    --background: 222 47% 4%;
+    --foreground: 210 40% 98%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 231 65% 15%;
+    --card: 222 47% 8%;
+    --card-foreground: 210 40% 98%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 231 65% 15%;
+    --popover: 222 47% 8%;
+    --popover-foreground: 210 40% 98%;
 
-    --primary: 231 65% 31%;
-    --primary-foreground: 0 0% 98%;
+    --primary: 217 91% 60%;
+    --primary-foreground: 222 47% 4%;
 
-    --secondary: 200 12% 72%;
-    --secondary-foreground: 231 65% 15%;
+    --secondary: 217 33% 17%;
+    --secondary-foreground: 210 40% 98%;
 
-    --muted: 200 12% 85%;
-    --muted-foreground: 231 30% 45%;
+    --muted: 215 28% 17%;
+    --muted-foreground: 217 19% 60%;
 
-    --accent: 26 100% 50%;
-    --accent-foreground: 0 0% 98%;
+    --accent: 217 91% 60%;
+    --accent-foreground: 222 47% 4%;
 
-    --success: 130 45% 39%;
-    --success-foreground: 0 0% 98%;
+    --success: 142 71% 45%;
+    --success-foreground: 222 47% 4%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
+    --destructive: 0 63% 31%;
+    --destructive-foreground: 210 40% 98%;
 
-    --border: 200 12% 85%;
-    --input: 200 12% 85%;
-    --ring: 231 65% 31%;
+    --border: 215 28% 17%;
+    --input: 215 28% 17%;
+    --ring: 217 91% 60%;
 
     --radius: 0.75rem;
 
-    /* Space theme gradients */
-    --gradient-hero: linear-gradient(135deg, hsl(231 65% 31%) 0%, hsl(231 65% 20%) 100%);
-    --gradient-cta: linear-gradient(135deg, hsl(130 45% 39%) 0%, hsl(88 50% 53%) 100%);
-    --gradient-accent: linear-gradient(135deg, hsl(26 100% 50%) 0%, hsl(26 100% 40%) 100%);
-  }
-
-  .dark {
-    --background: 0 0% 13%;
-    --foreground: 0 0% 98%;
-
-    --card: 231 30% 18%;
-    --card-foreground: 0 0% 98%;
-
-    --popover: 231 30% 18%;
-    --popover-foreground: 0 0% 98%;
-
-    --primary: 231 65% 31%;
-    --primary-foreground: 0 0% 98%;
-
-    --secondary: 200 12% 30%;
-    --secondary-foreground: 0 0% 98%;
-
-    --muted: 200 12% 25%;
-    --muted-foreground: 200 12% 72%;
-
-    --accent: 26 100% 50%;
-    --accent-foreground: 0 0% 98%;
-
-    --success: 130 45% 39%;
-    --success-foreground: 0 0% 98%;
-
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-
-    --border: 200 12% 25%;
-    --input: 200 12% 25%;
-    --ring: 26 100% 50%;
-
-    /* Dark mode gradients */
-    --gradient-hero: linear-gradient(135deg, hsl(231 65% 15%) 0%, hsl(231 65% 10%) 100%);
-    --gradient-cta: linear-gradient(135deg, hsl(130 45% 39%) 0%, hsl(88 50% 53%) 100%);
-    --gradient-accent: linear-gradient(135deg, hsl(26 100% 50%) 0%, hsl(26 100% 40%) 100%);
+    /* AI/Futuristic gradients */
+    --gradient-hero: linear-gradient(135deg, hsl(222 47% 4%) 0%, hsl(222 47% 8%) 100%);
+    --gradient-cta: linear-gradient(135deg, hsl(217 91% 60%) 0%, hsl(142 71% 45%) 100%);
+    --gradient-glow: radial-gradient(circle at 50% 0%, hsl(217 91% 60% / 0.15) 0%, transparent 50%);
+    --gradient-card: linear-gradient(135deg, hsl(222 47% 8% / 0.5) 0%, hsl(217 33% 17% / 0.3) 100%);
   }
 }
 
@@ -96,7 +59,7 @@ All colors MUST be HSL.
   }
 
   h1, h2, h3, h4, h5, h6 {
-    @apply font-heading;
+    @apply font-heading tracking-tight;
   }
 }
 
@@ -109,12 +72,30 @@ All colors MUST be HSL.
     background: var(--gradient-cta);
   }
 
-  .gradient-accent {
-    background: var(--gradient-accent);
+  .gradient-glow {
+    background: var(--gradient-glow);
+  }
+
+  .gradient-card {
+    background: var(--gradient-card);
+  }
+
+  .glass-card {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .glow-text {
+    text-shadow: 0 0 30px hsl(217 91% 60% / 0.5);
   }
 
   .animate-float {
     animation: float 6s ease-in-out infinite;
+  }
+
+  .animate-glow {
+    animation: glow 3s ease-in-out infinite;
   }
 
   @keyframes float {
@@ -123,6 +104,15 @@ All colors MUST be HSL.
     }
     50% {
       transform: translateY(-20px);
+    }
+  }
+
+  @keyframes glow {
+    0%, 100% {
+      opacity: 0.5;
+    }
+    50% {
+      opacity: 1;
     }
   }
 }

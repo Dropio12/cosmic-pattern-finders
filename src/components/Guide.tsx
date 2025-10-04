@@ -1,5 +1,4 @@
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Search, Tag, Users, Award } from "lucide-react";
 
 const steps = [
@@ -27,37 +26,37 @@ const steps = [
 
 export const Guide = () => {
   return (
-    <section id="guide" className="py-20 bg-background">
-      <div className="container mx-auto px-4">
-        <div className="text-center mb-12">
-          <h2 className="text-4xl md:text-5xl font-heading font-bold mb-4">
-            How to Identify Patterns
+    <section id="guide" className="py-32 bg-background/50">
+      <div className="container mx-auto px-6">
+        <div className="text-center mb-16">
+          <h2 className="text-5xl md:text-6xl font-heading font-bold mb-6 tracking-tight">
+            How It Works
           </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Follow these simple steps to become a planetary pattern expert
+          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+            Four simple steps to contribute to planetary science
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
           {steps.map((step, index) => (
-            <Card key={index} className="relative overflow-hidden group hover:shadow-lg transition-shadow">
-              <div className="absolute top-0 right-0 w-20 h-20 gradient-accent opacity-10 rounded-full -translate-y-10 translate-x-10 group-hover:scale-150 transition-transform"></div>
-              <CardHeader>
-                <div className="w-12 h-12 rounded-lg gradient-cta flex items-center justify-center mb-4">
-                  <step.icon className="w-6 h-6 text-success-foreground" />
+            <div key={index} className="relative group">
+              <div className="glass-card rounded-2xl p-8 border border-border/50 hover:border-primary/50 transition-all h-full">
+                <div className="absolute -top-4 -left-4 w-8 h-8 rounded-lg bg-primary text-primary-foreground flex items-center justify-center text-sm font-bold">
+                  {index + 1}
                 </div>
-                <CardTitle className="text-xl">{step.title}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <CardDescription className="text-base">{step.description}</CardDescription>
-              </CardContent>
-            </Card>
+                <div className="w-14 h-14 rounded-xl gradient-cta flex items-center justify-center mb-6">
+                  <step.icon className="w-7 h-7 text-primary-foreground" />
+                </div>
+                <h3 className="text-xl font-heading font-bold mb-3">{step.title}</h3>
+                <p className="text-muted-foreground leading-relaxed">{step.description}</p>
+              </div>
+            </div>
           ))}
         </div>
 
         <div className="text-center">
-          <Button variant="hero" size="lg">
-            Take the Interactive Quiz
+          <Button variant="default" size="lg">
+            Start Learning
           </Button>
         </div>
       </div>

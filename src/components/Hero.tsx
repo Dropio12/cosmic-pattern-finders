@@ -4,41 +4,73 @@ import heroMars from "@/assets/hero-mars.jpg";
 
 export const Hero = () => {
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-16">
-      {/* Background Image */}
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
+      {/* Gradient Background */}
       <div className="absolute inset-0 z-0">
-        <img
-          src={heroMars}
-          alt="Mars surface with distant mountains"
-          className="w-full h-full object-cover"
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/60 to-background"></div>
+        <div className="absolute inset-0 bg-background"></div>
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[600px] gradient-glow"></div>
+        <div className="absolute inset-0 opacity-30">
+          <img
+            src={heroMars}
+            alt="Mars surface with distant mountains"
+            className="w-full h-full object-cover mix-blend-luminosity"
+          />
+        </div>
       </div>
 
+      {/* Grid Pattern */}
+      <div className="absolute inset-0 z-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:4rem_4rem]"></div>
+
       {/* Content */}
-      <div className="relative z-10 container mx-auto px-4 text-center">
-        <div className="max-w-4xl mx-auto space-y-8 animate-fade-in">
-          <h1 className="text-5xl md:text-7xl font-heading font-bold text-primary-foreground drop-shadow-lg">
-            Discover and Contribute to Planetary Science
+      <div className="relative z-10 container mx-auto px-6 text-center">
+        <div className="max-w-5xl mx-auto space-y-8 animate-fade-in">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-card border border-primary/20 mb-4">
+            <div className="w-2 h-2 rounded-full bg-success animate-pulse"></div>
+            <span className="text-sm text-muted-foreground">AI-Powered Planetary Analysis</span>
+          </div>
+          
+          <h1 className="text-6xl md:text-8xl font-heading font-bold text-foreground leading-tight">
+            Discover the{" "}
+            <span className="gradient-cta bg-clip-text text-transparent glow-text">
+              Unknown
+            </span>
           </h1>
-          <p className="text-xl md:text-2xl text-primary-foreground/90 font-body font-light max-w-2xl mx-auto">
-            Tag patterns, collaborate with others, and aid NASA in uncovering cosmic mysteries.
+          
+          <p className="text-xl md:text-2xl text-muted-foreground font-light max-w-3xl mx-auto leading-relaxed">
+            Join thousands of citizen scientists exploring planetary surfaces with AI. 
+            Tag patterns, contribute to real missions, and help uncover cosmic mysteries.
           </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
-            <Button variant="hero" size="lg" className="group">
+          
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-8">
+            <Button variant="default" size="lg" className="group">
               Start Exploring
               <ArrowRight className="group-hover:translate-x-1 transition-transform" />
             </Button>
-            <Button variant="secondary-outline" size="lg">
-              Learn How
+            <Button variant="outline" size="lg">
+              Watch Demo
             </Button>
+          </div>
+
+          <div className="flex items-center justify-center gap-8 pt-12 text-sm text-muted-foreground">
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-xs">✓</div>
+              <span>NASA Partnership</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-xs">✓</div>
+              <span>24k+ Patterns Tagged</span>
+            </div>
+            <div className="flex items-center gap-2 hidden sm:flex">
+              <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-xs">✓</div>
+              <span>Real-time AI Verification</span>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Floating elements */}
-      <div className="absolute bottom-10 left-10 w-16 h-16 rounded-full bg-accent/20 animate-float hidden lg:block"></div>
-      <div className="absolute top-40 right-20 w-24 h-24 rounded-full bg-success/10 animate-float hidden lg:block" style={{ animationDelay: '2s' }}></div>
+      {/* Floating orbs */}
+      <div className="absolute bottom-20 left-20 w-32 h-32 rounded-full bg-primary/10 blur-3xl animate-float hidden lg:block"></div>
+      <div className="absolute top-40 right-20 w-40 h-40 rounded-full bg-success/10 blur-3xl animate-float hidden lg:block" style={{ animationDelay: '2s' }}></div>
     </section>
   );
 };

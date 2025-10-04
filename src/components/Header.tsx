@@ -7,36 +7,33 @@ export const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border">
-      <nav className="container mx-auto px-4 py-4">
+    <header className="fixed top-0 left-0 right-0 z-50 glass-card border-b border-border/50">
+      <nav className="container mx-auto px-6 py-5">
         <div className="flex items-center justify-between">
-          <Link to="/" className="flex items-center space-x-2">
-            <div className="w-8 h-8 rounded-full gradient-accent"></div>
-            <span className="text-xl font-heading font-bold">Planet Explorer</span>
+          <Link to="/" className="flex items-center space-x-3">
+            <div className="w-8 h-8 rounded-full gradient-cta"></div>
+            <span className="text-xl font-heading font-bold tracking-tight">Planet Explorer</span>
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
-            <Link to="/" className="text-foreground hover:text-accent transition-colors">
+          <div className="hidden md:flex items-center space-x-10">
+            <Link to="/" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
               Home
             </Link>
-            <a href="#explore" className="text-foreground hover:text-accent transition-colors">
+            <a href="#explore" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
               Explore
             </a>
-            <a href="#guide" className="text-foreground hover:text-accent transition-colors">
+            <a href="#guide" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
               Guide
             </a>
-            <a href="#leaderboard" className="text-foreground hover:text-accent transition-colors">
+            <a href="#leaderboard" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
               Leaderboard
-            </a>
-            <a href="#about" className="text-foreground hover:text-accent transition-colors">
-              About
             </a>
           </div>
 
-          <div className="hidden md:flex items-center space-x-4">
-            <Button variant="ghost">Sign In</Button>
-            <Button variant="default">Sign Up</Button>
+          <div className="hidden md:flex items-center space-x-3">
+            <Button variant="ghost" size="sm">Sign In</Button>
+            <Button variant="default" size="sm">Get Started</Button>
           </div>
 
           {/* Mobile Menu Button */}
