@@ -77,42 +77,6 @@ export type Database = {
         }
         Relationships: []
       }
-      saved_patterns: {
-        Row: {
-          created_at: string
-          explorer_type: string
-          id: string
-          notes: string | null
-          pattern_type: string
-          updated_at: string
-          user_id: string
-          x_coordinate: number
-          y_coordinate: number
-        }
-        Insert: {
-          created_at?: string
-          explorer_type: string
-          id?: string
-          notes?: string | null
-          pattern_type: string
-          updated_at?: string
-          user_id: string
-          x_coordinate: number
-          y_coordinate: number
-        }
-        Update: {
-          created_at?: string
-          explorer_type?: string
-          id?: string
-          notes?: string | null
-          pattern_type?: string
-          updated_at?: string
-          user_id?: string
-          x_coordinate?: number
-          y_coordinate?: number
-        }
-        Relationships: []
-      }
     }
     Views: {
       [_ in never]: never
