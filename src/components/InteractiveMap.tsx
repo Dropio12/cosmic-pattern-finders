@@ -174,13 +174,13 @@ export const InteractiveMap = () => {
         <div className="flex items-center gap-2 md:gap-3 flex-wrap">
           {/* Zoom Controls */}
           <div className="flex items-center gap-1 md:gap-2 glass-card px-2 md:px-3 py-1.5 rounded-lg border border-border/50">
-            <Button variant="ghost" size="sm" onClick={() => setZoom(Math.max(zoom - 0.2, 0.5))}>
+            <Button variant="ghost" size="sm" onClick={() => setZoom(Math.max(zoom - 0.5, 0.5))}>
               <ZoomOut className="w-4 h-4" />
             </Button>
             <span className="text-xs md:text-sm text-muted-foreground min-w-[40px] md:min-w-[50px] text-center">
               {(zoom * 100).toFixed(0)}%
             </span>
-            <Button variant="ghost" size="sm" onClick={() => setZoom(Math.min(zoom + 0.2, 3))}>
+            <Button variant="ghost" size="sm" onClick={() => setZoom(Math.min(zoom + 0.5, 20))}>
               <ZoomIn className="w-4 h-4" />
             </Button>
           </div>
