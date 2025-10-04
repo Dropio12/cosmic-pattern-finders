@@ -63,15 +63,15 @@ export const Hero = () => {
           {/* Stats Section */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-16 max-w-4xl mx-auto">
             <div className="glass-card rounded-xl p-6 border border-border/50">
-              <div className="text-4xl font-bold gradient-cta bg-clip-text text-transparent mb-2">idk</div>
+              <div className="text-4xl font-bold text-primary glow-text mb-2">idk</div>
               <div className="text-sm text-muted-foreground">AI Accuracy Rate</div>
             </div>
             <div className="glass-card rounded-xl p-6 border border-border/50">
-              <div className="text-4xl font-bold gradient-cta bg-clip-text text-transparent mb-2">more than 1</div>
+              <div className="text-4xl font-bold text-primary glow-text mb-2">more than 1</div>
               <div className="text-sm text-muted-foreground">Countries Participating</div>
             </div>
             <div className="glass-card rounded-xl p-6 border border-border/50">
-              <div className="text-4xl font-bold gradient-cta bg-clip-text text-transparent mb-2">at least 2</div>
+              <div className="text-4xl font-bold text-primary glow-text mb-2">at least 2</div>
               <div className="text-sm text-muted-foreground">Patterns Analyzed</div>
             </div>
           </div>
