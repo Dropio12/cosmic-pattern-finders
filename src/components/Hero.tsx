@@ -25,7 +25,7 @@ export const Hero = () => {
           
           <h1 className="text-6xl md:text-8xl font-heading font-bold text-foreground leading-tight">
             Discover the{" "}
-            <span className="gradient-cta bg-clip-text text-transparent glow-text">
+            <span className="text-primary glow-text">
               Unknown
             </span>
           </h1>
