@@ -26,7 +26,7 @@ export const InteractiveMap = ({ mapImage, title, patternOptions }: InteractiveM
   const [zoom, setZoom] = useState(1);
   const [tags, setTags] = useState<PatternTag[]>([]);
   const [selectedTool, setSelectedTool] = useState<string>("pin");
-  const [patternType, setPatternType] = useState<string>("crater");
+  const [patternType, setPatternType] = useState<string>(patternOptions[0]?.value || "");
   const [mouseCoords, setMouseCoords] = useState({ x: 0, y: 0 });
   const [notes, setNotes] = useState("");
   const [showMobileSheet, setShowMobileSheet] = useState(false);
@@ -166,7 +166,7 @@ export const InteractiveMap = ({ mapImage, title, patternOptions }: InteractiveM
   );
 
   return (
-    <section className="h-full bg-background flex flex-col">
+    <section className="absolute inset-0 bg-background flex flex-col">
       {/* Top Toolbar */}
       <div className="glass-card border-b border-border/50 px-4 md:px-6 py-3 md:py-4 flex items-center justify-between gap-2 md:gap-4 flex-wrap z-10">
         <div className="flex items-center gap-2">
