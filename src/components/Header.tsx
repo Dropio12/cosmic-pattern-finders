@@ -33,7 +33,9 @@ export const Header = () => {
 
           <div className="hidden md:flex items-center space-x-3">
             <Button variant="ghost" size="sm">Sign In</Button>
-            <Button variant="default" size="sm">Get Started</Button>
+            <Button variant="default" size="sm" asChild>
+              <Link to="/explore">Get Started</Link>
+            </Button>
           </div>
 
           {/* Mobile Menu Button */}
@@ -81,8 +83,8 @@ export const Header = () => {
               <Button variant="ghost" className="w-full">
                 Sign In
               </Button>
-              <Button variant="default" className="w-full">
-                Get Started
+              <Button variant="default" className="w-full" asChild>
+                <Link to="/explore">Get Started</Link>
               </Button>
             </div>
           </div>
