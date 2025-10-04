@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { ZoomIn, ZoomOut, Circle, Square, Pentagon, MapPin, Save, Trash2, Info, Menu, Eraser } from "lucide-react";
+import { ZoomIn, ZoomOut, MapPin, Save, Trash2, Info, Menu, Eraser } from "lucide-react";
 import { useState } from "react";
 import marsMap from "@/assets/mars-map.jpg";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -191,7 +191,7 @@ export const InteractiveMap = () => {
               variant={selectedTool === "pin" ? "default" : "ghost"}
               size="sm"
               onClick={() => setSelectedTool("pin")}
-              title="Pin tool"
+              title="Pin tool - Click to add tags"
             >
               <MapPin className="w-4 h-4" />
             </Button>
@@ -202,33 +202,6 @@ export const InteractiveMap = () => {
               title="Eraser - Click tags to delete"
             >
               <Eraser className="w-4 h-4" />
-            </Button>
-            <Button
-              variant={selectedTool === "circle" ? "default" : "ghost"}
-              size="sm"
-              onClick={() => setSelectedTool("circle")}
-              title="Circle tool"
-              className="hidden md:flex"
-            >
-              <Circle className="w-4 h-4" />
-            </Button>
-            <Button
-              variant={selectedTool === "square" ? "default" : "ghost"}
-              size="sm"
-              onClick={() => setSelectedTool("square")}
-              title="Square tool"
-              className="hidden md:flex"
-            >
-              <Square className="w-4 h-4" />
-            </Button>
-            <Button
-              variant={selectedTool === "polygon" ? "default" : "ghost"}
-              size="sm"
-              onClick={() => setSelectedTool("polygon")}
-              title="Polygon tool"
-              className="hidden md:flex"
-            >
-              <Pentagon className="w-4 h-4" />
             </Button>
           </div>
 
