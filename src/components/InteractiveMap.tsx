@@ -85,9 +85,10 @@ export const InteractiveMap = ({ mapImage, title, patternOptions, explorerType }
     }
   };
 
-  // Handle left-click drag for panning
+  // Handle middle-click drag for panning
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (e.button === 0) { // Left mouse button
+    if (e.button === 1) { // Middle mouse button
+      e.preventDefault();
       setIsPanning(true);
       setPanStart({ x: e.clientX - pan.x, y: e.clientY - pan.y });
     }
@@ -439,7 +440,7 @@ export const InteractiveMap = ({ mapImage, title, patternOptions, explorerType }
               transform: `translate(${pan.x}px, ${pan.y}px) scale(${zoom})`,
               transformOrigin: 'center',
               transition: isPanning ? 'none' : 'transform 0.2s ease',
-              cursor: isPanning ? 'grabbing' : selectedTool === "eraser" ? "not-allowed" : "grab"
+              cursor: isPanning ? 'grabbing' : selectedTool === "eraser" ? "not-allowed" : "crosshair"
             }}
             onClick={handleMapClick}
             onMouseDown={handleMouseDown}
