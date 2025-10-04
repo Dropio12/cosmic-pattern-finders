@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
+import { Link } from "react-router-dom";
 import heroMars from "@/assets/hero-mars.jpg";
 export const Hero = () => {
   return <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
@@ -36,13 +37,17 @@ export const Hero = () => {
           </p>
           
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-8">
-            <Button variant="default" size="lg" className="group">
-              Start Exploring
-              <ArrowRight className="group-hover:translate-x-1 transition-transform" />
-            </Button>
-            <Button variant="outline" size="lg">
-              Watch Demo
-            </Button>
+            <Link to="/explore">
+              <Button variant="default" size="lg" className="group">
+                Start Exploring
+                <ArrowRight className="group-hover:translate-x-1 transition-transform" />
+              </Button>
+            </Link>
+            <Link to="/guide">
+              <Button variant="outline" size="lg">
+                Watch Demo
+              </Button>
+            </Link>
           </div>
 
           <div className="flex items-center justify-center gap-8 pt-12 text-sm text-muted-foreground flex-wrap">

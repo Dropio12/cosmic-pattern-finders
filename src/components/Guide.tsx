@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 import { Search, Tag, Users, Award } from "lucide-react";
 
 const steps = [
@@ -55,9 +56,11 @@ export const Guide = () => {
         </div>
 
         <div className="text-center">
-          <Button variant="default" size="lg">
-            Start Learning
-          </Button>
+          <Link to="/guide">
+            <Button variant="default" size="lg">
+              Start Learning
+            </Button>
+          </Link>
         </div>
       </div>
     </section>

@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 import { Rocket, Users, Globe, Award } from "lucide-react";
 
 const features = [
@@ -62,9 +63,11 @@ export const About = () => {
               <p className="text-lg text-muted-foreground mb-6 max-w-2xl">
                 Trusted by researchers at NASA, ESA, and leading universities worldwide
               </p>
-              <Button variant="default" size="lg">
-                Join the Mission
-              </Button>
+              <Link to="/explore">
+                <Button variant="default" size="lg">
+                  Join the Mission
+                </Button>
+              </Link>
             </div>
           </div>
         </div>
