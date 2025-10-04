@@ -35,7 +35,7 @@ const Explore = () => {
             </TabsList>
           </div>
           
-          <TabsContent value="mars" className="flex-1 m-0 relative">
+          <TabsContent value="mars" className="flex-1 m-0">
             <InteractiveMap 
               mapImage={marsMap}
               title="Mars Pattern Explorer"
@@ -43,7 +43,7 @@ const Explore = () => {
             />
           </TabsContent>
           
-          <TabsContent value="deepspace" className="flex-1 m-0 relative">
+          <TabsContent value="deepspace" className="flex-1 m-0">
             <InteractiveMap 
               mapImage={deepspaceMap}
               title="Deep Space Pattern Explorer"

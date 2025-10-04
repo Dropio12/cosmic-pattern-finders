@@ -26,7 +26,7 @@ export const InteractiveMap = ({ mapImage, title, patternOptions }: InteractiveM
   const [zoom, setZoom] = useState(1);
   const [tags, setTags] = useState<PatternTag[]>([]);
   const [selectedTool, setSelectedTool] = useState<string>("pin");
-  const [patternType, setPatternType] = useState<string>(patternOptions[0]?.value || "");
+  const [patternType, setPatternType] = useState<string>("crater");
   const [mouseCoords, setMouseCoords] = useState({ x: 0, y: 0 });
   const [notes, setNotes] = useState("");
   const [showMobileSheet, setShowMobileSheet] = useState(false);
@@ -166,7 +166,7 @@ export const InteractiveMap = ({ mapImage, title, patternOptions }: InteractiveM
   );
 
   return (
-    <section className="absolute inset-0 bg-background flex flex-col">
+    <section className="h-full bg-background flex flex-col">
       {/* Top Toolbar */}
       <div className="glass-card border-b border-border/50 px-4 md:px-6 py-3 md:py-4 flex items-center justify-between gap-2 md:gap-4 flex-wrap z-10">
         <div className="flex items-center gap-2">
@@ -297,44 +297,6 @@ export const InteractiveMap = ({ mapImage, title, patternOptions }: InteractiveM
               </div>
             ))}
           </div>
-
-          {/* Footer */}
-          <footer className="glass-card border-t border-border/50 py-8 px-6">
-            <div className="max-w-6xl mx-auto">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
-                <div>
-                  <h4 className="font-heading font-semibold text-foreground mb-3">About Explorer</h4>
-                  <p className="text-sm text-muted-foreground">
-                    Discover and tag patterns across planetary surfaces and deep space imagery. Contribute to citizen science.
-                  </p>
-                </div>
-                <div>
-                  <h4 className="font-heading font-semibold text-foreground mb-3">Resources</h4>
-                  <ul className="space-y-2 text-sm text-muted-foreground">
-                    <li><a href="/guide" className="hover:text-primary transition-colors">Pattern Guide</a></li>
-                    <li><a href="/leaderboard" className="hover:text-primary transition-colors">Leaderboard</a></li>
-                    <li><a href="/" className="hover:text-primary transition-colors">Home</a></li>
-                  </ul>
-                </div>
-                <div>
-                  <h4 className="font-heading font-semibold text-foreground mb-3">Stats</h4>
-                  <div className="space-y-2 text-sm">
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">Your Tags:</span>
-                      <span className="text-primary font-semibold">{tags.length}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">AI Verified:</span>
-                      <span className="text-success font-semibold">{Math.floor(tags.length * 0.82)}</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="pt-6 border-t border-border/50 text-center text-sm text-muted-foreground">
-                <p>Pattern Explorer • Powered by AI • {new Date().getFullYear()}</p>
-              </div>
-            </div>
-          </footer>
         </div>
 
         {/* Right Sidebar - Desktop only */}
