@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Rocket } from "lucide-react";
 import { z } from "zod";
 
@@ -16,6 +17,7 @@ const passwordSchema = z.string().min(6, "Password must be at least 6 characters
 const Auth = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isResearcher, setIsResearcher] = useState("no");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
@@ -64,6 +66,9 @@ const Auth = () => {
       password,
       options: {
         emailRedirectTo: `${window.location.origin}/`,
+        data: {
+          is_researcher: isResearcher === "yes"
+        }
       },
     });
 
@@ -241,6 +246,24 @@ const Auth = () => {
                 <p className="text-xs text-muted-foreground">
                   Password must be at least 6 characters
                 </p>
+              </div>
+              
+              <div className="space-y-3">
+                <Label>Are you a researcher?</Label>
+                <RadioGroup value={isResearcher} onValueChange={setIsResearcher}>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="yes" id="researcher-yes" />
+                    <Label htmlFor="researcher-yes" className="font-normal cursor-pointer">
+                      Yes, I'm a researcher
+                    </Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="no" id="researcher-no" />
+                    <Label htmlFor="researcher-no" className="font-normal cursor-pointer">
+                      No, I'm exploring for fun
+                    </Label>
+                  </div>
+                </RadioGroup>
               </div>
               <Button 
                 type="submit" 
