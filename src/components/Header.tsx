@@ -11,8 +11,8 @@ export const Header = () => {
       <nav className="container mx-auto px-6 py-5">
         <div className="flex items-center justify-between">
           <Link to="/" className="flex items-center space-x-3">
-            <div className="w-8 h-8 rounded-full gradient-cta"></div>
-            <span className="text-xl font-heading font-bold tracking-tight">Planet Explorer</span>
+            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-orange-500 to-orange-600"></div>
+            <span className="text-xl font-heading font-bold tracking-tight">Space Explorer</span>
           </Link>
 
           {/* Desktop Navigation */}
@@ -20,15 +20,15 @@ export const Header = () => {
             <Link to="/" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
               Home
             </Link>
-            <a href="#explore" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+            <Link to="/explore" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
               Explore
-            </a>
-            <a href="#guide" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+            </Link>
+            <Link to="/guide" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
               Guide
-            </a>
-            <a href="#leaderboard" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+            </Link>
+            <Link to="/leaderboard" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
               Leaderboard
-            </a>
+            </Link>
           </div>
 
           <div className="hidden md:flex items-center space-x-3">
@@ -49,40 +49,40 @@ export const Header = () => {
         {/* Mobile Navigation */}
         {mobileMenuOpen && (
           <div className="md:hidden mt-4 pb-4 space-y-4">
-            <a
-              href="#explore"
+            <Link
+              to="/"
+              className="block text-foreground hover:text-accent transition-colors"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Home
+            </Link>
+            <Link
+              to="/explore"
               className="block text-foreground hover:text-accent transition-colors"
               onClick={() => setMobileMenuOpen(false)}
             >
               Explore
-            </a>
-            <a
-              href="#guide"
+            </Link>
+            <Link
+              to="/guide"
               className="block text-foreground hover:text-accent transition-colors"
               onClick={() => setMobileMenuOpen(false)}
             >
               Guide
-            </a>
-            <a
-              href="#leaderboard"
+            </Link>
+            <Link
+              to="/leaderboard"
               className="block text-foreground hover:text-accent transition-colors"
               onClick={() => setMobileMenuOpen(false)}
             >
               Leaderboard
-            </a>
-            <a
-              href="#about"
-              className="block text-foreground hover:text-accent transition-colors"
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              About
-            </a>
+            </Link>
             <div className="flex flex-col space-y-2 pt-4">
               <Button variant="ghost" className="w-full">
                 Sign In
               </Button>
               <Button variant="default" className="w-full">
-                Sign Up
+                Get Started
               </Button>
             </div>
           </div>

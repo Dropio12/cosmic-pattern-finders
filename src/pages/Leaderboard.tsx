@@ -1,19 +1,17 @@
 import { Header } from "@/components/Header";
-import { Hero } from "@/components/Hero";
-import { About } from "@/components/About";
+import { Leaderboard as LeaderboardComponent } from "@/components/Leaderboard";
 import { Footer } from "@/components/Footer";
 
-const Index = () => {
+const Leaderboard = () => {
   return (
     <div className="min-h-screen">
       <Header />
-      <main>
-        <Hero />
-        <About />
+      <main className="pt-20">
+        <LeaderboardComponent />
       </main>
       <Footer />
     </div>
   );
 };
 
-export default Index;
+export default Leaderboard;

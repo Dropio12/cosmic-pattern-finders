@@ -1,19 +1,17 @@
 import { Header } from "@/components/Header";
-import { Hero } from "@/components/Hero";
-import { About } from "@/components/About";
+import { Guide as GuideComponent } from "@/components/Guide";
 import { Footer } from "@/components/Footer";
 
-const Index = () => {
+const Guide = () => {
   return (
     <div className="min-h-screen">
       <Header />
-      <main>
-        <Hero />
-        <About />
+      <main className="pt-20">
+        <GuideComponent />
       </main>
       <Footer />
     </div>
   );
 };
 
-export default Index;
+export default Guide;
