@@ -24,6 +24,7 @@ export const InteractiveMap = () => {
   const [mouseCoords, setMouseCoords] = useState({ x: 0, y: 0 });
   const [notes, setNotes] = useState("");
   const [showMobileSheet, setShowMobileSheet] = useState(false);
+  const [touchStart, setTouchStart] = useState<{ distance: number; zoom: number } | null>(null);
   const { toast } = useToast();
 
   const handleMapClick = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -63,6 +64,35 @@ export const InteractiveMap = () => {
     if (selectedTool === "eraser") {
       removeTag(id);
     }
+  };
+
+  // Touch handlers for pinch-to-zoom
+  const getTouchDistance = (touches: React.TouchList) => {
+    const touch1 = touches[0];
+    const touch2 = touches[1];
+    return Math.hypot(touch2.clientX - touch1.clientX, touch2.clientY - touch1.clientY);
+  };
+
+  const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
+    if (e.touches.length === 2) {
+      e.preventDefault();
+      const distance = getTouchDistance(e.touches);
+      setTouchStart({ distance, zoom });
+    }
+  };
+
+  const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
+    if (e.touches.length === 2 && touchStart) {
+      e.preventDefault();
+      const currentDistance = getTouchDistance(e.touches);
+      const scale = currentDistance / touchStart.distance;
+      const newZoom = Math.max(0.5, Math.min(20, touchStart.zoom * scale));
+      setZoom(newZoom);
+    }
+  };
+
+  const handleTouchEnd = () => {
+    setTouchStart(null);
   };
 
   const SidebarContent = () => (
@@ -254,6 +284,9 @@ export const InteractiveMap = () => {
             }}
             onClick={handleMapClick}
             onMouseMove={handleMouseMove}
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
           >
             <img
               src={marsMap}
@@ -265,10 +298,15 @@ export const InteractiveMap = () => {
             {tags.map((tag) => (
               <div
                 key={tag.id}
-                className={`absolute w-8 h-8 -translate-x-1/2 -translate-y-1/2 group pattern-tag ${
+                className={`absolute -translate-x-1/2 -translate-y-1/2 group pattern-tag ${
                   selectedTool === "eraser" ? "cursor-pointer" : "cursor-default"
                 }`}
-                style={{ left: `${tag.x}%`, top: `${tag.y}%` }}
+                style={{ 
+                  left: `${tag.x}%`, 
+                  top: `${tag.y}%`,
+                  width: `${32 / zoom}px`,
+                  height: `${32 / zoom}px`,
+                }}
                 onClick={(e) => handleTagClick(tag.id, e)}
               >
                 <div className="w-full h-full rounded-full bg-primary/30 animate-ping"></div>
@@ -278,10 +316,19 @@ export const InteractiveMap = () => {
                     : "border-primary bg-primary/50 group-hover:border-primary/70"
                 }`}></div>
                 {selectedTool === "eraser" && (
-                  <Eraser className="absolute inset-0 m-auto w-4 h-4 text-white opacity-70 group-hover:opacity-100 transition-opacity pointer-events-none" />
+                  <Eraser 
+                    className="absolute inset-0 m-auto text-white opacity-70 group-hover:opacity-100 transition-opacity pointer-events-none" 
+                    style={{ width: `${16 / zoom}px`, height: `${16 / zoom}px` }}
+                  />
                 )}
-                <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50">
-                  <div className="glass-card px-3 py-2 rounded-lg border border-border/50 text-xs whitespace-nowrap shadow-lg">
+                <div 
+                  className="absolute top-full left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50"
+                  style={{ marginTop: `${8 / zoom}px` }}
+                >
+                  <div 
+                    className="glass-card px-3 py-2 rounded-lg border border-border/50 text-xs whitespace-nowrap shadow-lg"
+                    style={{ transform: `scale(${1 / zoom})` }}
+                  >
                     <div className="font-semibold text-foreground capitalize">{tag.type}</div>
                     {tag.notes && <div className="text-muted-foreground mt-1">{tag.notes}</div>}
                     {selectedTool === "eraser" && (
