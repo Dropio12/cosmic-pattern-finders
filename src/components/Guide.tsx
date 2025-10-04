@@ -56,7 +56,7 @@ export const Guide = () => {
         </div>
 
         <div className="text-center">
-          <Link to="/guide">
+          <Link to="/formations">
             <Button variant="default" size="lg">
               Start Learning
             </Button>

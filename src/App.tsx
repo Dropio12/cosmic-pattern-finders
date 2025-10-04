@@ -11,6 +11,13 @@ import Guide from "./pages/Guide";
 import Leaderboard from "./pages/Leaderboard";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
+import FormationsOverview from "./pages/formations/FormationsOverview";
+import GeologicalLayers from "./pages/formations/GeologicalLayers";
+import ImpactCraters from "./pages/formations/ImpactCraters";
+import AeolianFeatures from "./pages/formations/AeolianFeatures";
+import FluvialChannels from "./pages/formations/FluvialChannels";
+import VolcanicStructures from "./pages/formations/VolcanicStructures";
+import TectonicPatterns from "./pages/formations/TectonicPatterns";
 
 const queryClient = new QueryClient();
 
@@ -26,6 +33,13 @@ const App = () => (
           <Route path="/explore/mars" element={<MarsExplorer />} />
           <Route path="/explore/deepspace" element={<DeepSpaceExplorer />} />
           <Route path="/guide" element={<Guide />} />
+          <Route path="/formations" element={<FormationsOverview />} />
+          <Route path="/formations/geological-layers" element={<GeologicalLayers />} />
+          <Route path="/formations/impact-craters" element={<ImpactCraters />} />
+          <Route path="/formations/aeolian-features" element={<AeolianFeatures />} />
+          <Route path="/formations/fluvial-channels" element={<FluvialChannels />} />
+          <Route path="/formations/volcanic-structures" element={<VolcanicStructures />} />
+          <Route path="/formations/tectonic-patterns" element={<TectonicPatterns />} />
           <Route path="/leaderboard" element={<Leaderboard />} />
           <Route path="/auth" element={<Auth />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
