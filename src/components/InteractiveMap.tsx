@@ -1,10 +1,11 @@
 import { Button } from "@/components/ui/button";
-import { ZoomIn, ZoomOut, Maximize2, Circle, Square, Pentagon, MapPin, Layers, Save, Trash2, Info } from "lucide-react";
+import { ZoomIn, ZoomOut, Circle, Square, Pentagon, MapPin, Save, Trash2, Info, Menu, X } from "lucide-react";
 import { useState } from "react";
 import marsMap from "@/assets/mars-map.jpg";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
 type PatternTag = {
   x: number;
@@ -19,11 +20,14 @@ export const InteractiveMap = () => {
   const [tags, setTags] = useState<PatternTag[]>([]);
   const [selectedTool, setSelectedTool] = useState<string>("pin");
   const [patternType, setPatternType] = useState<string>("crater");
-  const [showLayers, setShowLayers] = useState(true);
   const [mouseCoords, setMouseCoords] = useState({ x: 0, y: 0 });
   const [notes, setNotes] = useState("");
+  const [showMobileSheet, setShowMobileSheet] = useState(false);
 
   const handleMapClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if ((e.target as HTMLElement).closest('.pattern-tag')) {
+      return; // Don't add new tag if clicking on existing tag
+    }
     const rect = e.currentTarget.getBoundingClientRect();
     const x = ((e.clientX - rect.left) / rect.width) * 100;
     const y = ((e.clientY - rect.top) / rect.height) * 100;
@@ -39,29 +43,124 @@ export const InteractiveMap = () => {
     setMouseCoords({ x, y });
   };
 
-  const removeTag = (id: number) => {
+  const removeTag = (id: number, e?: React.MouseEvent) => {
+    e?.stopPropagation();
     setTags(tags.filter(tag => tag.id !== id));
   };
+
+  const SidebarContent = () => (
+    <>
+      <div className="p-6 border-b border-border/50">
+        <h3 className="text-lg font-heading font-semibold mb-4">Pattern Details</h3>
+        <div className="space-y-4">
+          <div>
+            <label className="text-sm text-muted-foreground mb-2 block">Notes</label>
+            <Input
+              placeholder="Add notes about this pattern..."
+              value={notes}
+              onChange={(e) => setNotes(e.target.value)}
+              className="glass-card border-border/50"
+            />
+          </div>
+          <div className="glass-card p-3 rounded-lg border border-border/50 space-y-2">
+            <div className="flex justify-between text-sm">
+              <span className="text-muted-foreground">Coordinates:</span>
+              <span className="text-foreground font-mono">{mouseCoords.x}, {mouseCoords.y}</span>
+            </div>
+            <div className="flex justify-between text-sm">
+              <span className="text-muted-foreground">Zoom:</span>
+              <span className="text-foreground">{(zoom * 100).toFixed(0)}%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Tagged Patterns List */}
+      <div className="flex-1 overflow-auto p-6">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-lg font-heading font-semibold">Tagged Patterns</h3>
+          <Badge variant="outline">{tags.length}</Badge>
+        </div>
+        
+        {tags.length === 0 ? (
+          <div className="text-center py-8">
+            <Info className="w-12 h-12 text-muted-foreground mx-auto mb-3 opacity-50" />
+            <p className="text-sm text-muted-foreground">
+              Click on the map to start tagging patterns
+            </p>
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {tags.map((tag) => (
+              <div key={tag.id} className="glass-card p-4 rounded-lg border border-border/50 group">
+                <div className="flex items-start justify-between mb-2">
+                  <div>
+                    <div className="font-semibold text-sm capitalize text-foreground">{tag.type}</div>
+                    <div className="text-xs text-muted-foreground font-mono mt-1">
+                      {tag.x.toFixed(1)}, {tag.y.toFixed(1)}
+                    </div>
+                  </div>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={(e) => removeTag(tag.id, e)}
+                    className="md:opacity-0 md:group-hover:opacity-100 transition-opacity"
+                  >
+                    <Trash2 className="w-4 h-4 text-destructive" />
+                  </Button>
+                </div>
+                {tag.notes && (
+                  <p className="text-xs text-muted-foreground mt-2">{tag.notes}</p>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Bottom Stats */}
+      <div className="p-6 border-t border-border/50 space-y-3">
+        <div className="flex items-center justify-between text-sm">
+          <span className="text-muted-foreground">Total Tagged:</span>
+          <span className="text-foreground font-semibold">{tags.length}</span>
+        </div>
+        <div className="flex items-center justify-between text-sm">
+          <span className="text-muted-foreground">AI Verified:</span>
+          <span className="text-success font-semibold">{Math.floor(tags.length * 0.82)}</span>
+        </div>
+        <Button
+          variant="destructive"
+          size="sm"
+          className="w-full"
+          onClick={() => setTags([])}
+          disabled={tags.length === 0}
+        >
+          <Trash2 className="w-4 h-4 mr-2" />
+          Clear All Tags
+        </Button>
+      </div>
+    </>
+  );
 
   return (
     <section className="fixed inset-0 top-20 bg-background flex flex-col">
       {/* Top Toolbar */}
-      <div className="glass-card border-b border-border/50 px-6 py-4 flex items-center justify-between gap-4 flex-wrap z-10">
+      <div className="glass-card border-b border-border/50 px-4 md:px-6 py-3 md:py-4 flex items-center justify-between gap-2 md:gap-4 flex-wrap z-10">
         <div className="flex items-center gap-2">
-          <h1 className="text-2xl font-heading font-bold">Pattern Explorer</h1>
-          <Badge variant="outline" className="bg-success/10 text-success border-success/20">
+          <h1 className="text-lg md:text-2xl font-heading font-bold">Pattern Explorer</h1>
+          <Badge variant="outline" className="bg-success/10 text-success border-success/20 hidden sm:flex">
             <div className="w-2 h-2 rounded-full bg-success animate-pulse mr-2"></div>
             Live
           </Badge>
         </div>
 
-        <div className="flex items-center gap-3 flex-wrap">
+        <div className="flex items-center gap-2 md:gap-3 flex-wrap">
           {/* Zoom Controls */}
-          <div className="flex items-center gap-2 glass-card px-3 py-1.5 rounded-lg border border-border/50">
+          <div className="flex items-center gap-1 md:gap-2 glass-card px-2 md:px-3 py-1.5 rounded-lg border border-border/50">
             <Button variant="ghost" size="sm" onClick={() => setZoom(Math.max(zoom - 0.2, 0.5))}>
               <ZoomOut className="w-4 h-4" />
             </Button>
-            <span className="text-sm text-muted-foreground min-w-[50px] text-center">
+            <span className="text-xs md:text-sm text-muted-foreground min-w-[40px] md:min-w-[50px] text-center">
               {(zoom * 100).toFixed(0)}%
             </span>
             <Button variant="ghost" size="sm" onClick={() => setZoom(Math.min(zoom + 0.2, 3))}>
@@ -69,8 +168,8 @@ export const InteractiveMap = () => {
             </Button>
           </div>
 
-          {/* Drawing Tools */}
-          <div className="flex items-center gap-1 glass-card px-2 py-1.5 rounded-lg border border-border/50">
+          {/* Drawing Tools - Hidden on mobile */}
+          <div className="hidden md:flex items-center gap-1 glass-card px-2 py-1.5 rounded-lg border border-border/50">
             <Button
               variant={selectedTool === "pin" ? "default" : "ghost"}
               size="sm"
@@ -103,7 +202,7 @@ export const InteractiveMap = () => {
 
           {/* Pattern Type Selector */}
           <Select value={patternType} onValueChange={setPatternType}>
-            <SelectTrigger className="w-[180px] glass-card border-border/50">
+            <SelectTrigger className="w-[140px] md:w-[180px] glass-card border-border/50 text-xs md:text-sm">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -116,18 +215,20 @@ export const InteractiveMap = () => {
             </SelectContent>
           </Select>
 
-          {/* Layer Toggle */}
-          <Button
-            variant={showLayers ? "default" : "outline"}
-            size="sm"
-            onClick={() => setShowLayers(!showLayers)}
-          >
-            <Layers className="w-4 h-4 mr-2" />
-            Layers
-          </Button>
+          {/* Mobile Menu */}
+          <Sheet open={showMobileSheet} onOpenChange={setShowMobileSheet}>
+            <SheetTrigger asChild>
+              <Button variant="outline" size="sm" className="md:hidden">
+                <Menu className="w-4 h-4" />
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="right" className="w-80 p-0 glass-card border-border/50 flex flex-col">
+              <SidebarContent />
+            </SheetContent>
+          </Sheet>
 
-          {/* Actions */}
-          <Button variant="outline" size="sm">
+          {/* Export - Hidden on mobile */}
+          <Button variant="outline" size="sm" className="hidden lg:flex">
             <Save className="w-4 h-4 mr-2" />
             Export
           </Button>
@@ -158,15 +259,18 @@ export const InteractiveMap = () => {
             {tags.map((tag) => (
               <div
                 key={tag.id}
-                className="absolute w-8 h-8 -translate-x-1/2 -translate-y-1/2 group"
+                className="absolute w-8 h-8 -translate-x-1/2 -translate-y-1/2 group pattern-tag cursor-pointer"
                 style={{ left: `${tag.x}%`, top: `${tag.y}%` }}
+                onClick={(e) => removeTag(tag.id, e)}
               >
                 <div className="w-full h-full rounded-full bg-primary/30 animate-ping"></div>
-                <div className="absolute inset-0 w-full h-full rounded-full border-2 border-primary bg-primary/50"></div>
-                <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                <div className="absolute inset-0 w-full h-full rounded-full border-2 border-primary bg-primary/50 group-hover:bg-destructive/50 group-hover:border-destructive transition-colors"></div>
+                <X className="absolute inset-0 m-auto w-4 h-4 text-white opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
+                <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none hidden md:block">
                   <div className="glass-card px-3 py-2 rounded-lg border border-border/50 text-xs whitespace-nowrap">
                     <div className="font-semibold text-foreground capitalize">{tag.type}</div>
                     {tag.notes && <div className="text-muted-foreground">{tag.notes}</div>}
+                    <div className="text-destructive text-xs mt-1">Click to delete</div>
                   </div>
                 </div>
               </div>
@@ -174,98 +278,26 @@ export const InteractiveMap = () => {
           </div>
         </div>
 
-        {/* Right Sidebar */}
-        <div className="w-80 glass-card border-l border-border/50 flex flex-col">
-          <div className="p-6 border-b border-border/50">
-            <h3 className="text-lg font-heading font-semibold mb-4">Pattern Details</h3>
-            <div className="space-y-4">
-              <div>
-                <label className="text-sm text-muted-foreground mb-2 block">Notes</label>
-                <Input
-                  placeholder="Add notes about this pattern..."
-                  value={notes}
-                  onChange={(e) => setNotes(e.target.value)}
-                  className="glass-card border-border/50"
-                />
-              </div>
-              <div className="glass-card p-3 rounded-lg border border-border/50 space-y-2">
-                <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">Coordinates:</span>
-                  <span className="text-foreground font-mono">{mouseCoords.x}, {mouseCoords.y}</span>
-                </div>
-                <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">Zoom:</span>
-                  <span className="text-foreground">{(zoom * 100).toFixed(0)}%</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Tagged Patterns List */}
-          <div className="flex-1 overflow-auto p-6">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-heading font-semibold">Tagged Patterns</h3>
-              <Badge variant="outline">{tags.length}</Badge>
-            </div>
-            
-            {tags.length === 0 ? (
-              <div className="text-center py-8">
-                <Info className="w-12 h-12 text-muted-foreground mx-auto mb-3 opacity-50" />
-                <p className="text-sm text-muted-foreground">
-                  Click on the map to start tagging patterns
-                </p>
-              </div>
-            ) : (
-              <div className="space-y-3">
-                {tags.map((tag, index) => (
-                  <div key={tag.id} className="glass-card p-4 rounded-lg border border-border/50 group">
-                    <div className="flex items-start justify-between mb-2">
-                      <div>
-                        <div className="font-semibold text-sm capitalize text-foreground">{tag.type}</div>
-                        <div className="text-xs text-muted-foreground font-mono mt-1">
-                          {tag.x.toFixed(1)}, {tag.y.toFixed(1)}
-                        </div>
-                      </div>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => removeTag(tag.id)}
-                        className="opacity-0 group-hover:opacity-100 transition-opacity"
-                      >
-                        <Trash2 className="w-4 h-4 text-destructive" />
-                      </Button>
-                    </div>
-                    {tag.notes && (
-                      <p className="text-xs text-muted-foreground mt-2">{tag.notes}</p>
-                    )}
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-
-          {/* Bottom Stats */}
-          <div className="p-6 border-t border-border/50 space-y-3">
-            <div className="flex items-center justify-between text-sm">
-              <span className="text-muted-foreground">Total Tagged:</span>
-              <span className="text-foreground font-semibold">{tags.length}</span>
-            </div>
-            <div className="flex items-center justify-between text-sm">
-              <span className="text-muted-foreground">AI Verified:</span>
-              <span className="text-success font-semibold">{Math.floor(tags.length * 0.82)}</span>
-            </div>
-            <Button
-              variant="destructive"
-              size="sm"
-              className="w-full"
-              onClick={() => setTags([])}
-              disabled={tags.length === 0}
-            >
-              <Trash2 className="w-4 h-4 mr-2" />
-              Clear All Tags
-            </Button>
-          </div>
+        {/* Right Sidebar - Desktop only */}
+        <div className="hidden md:flex w-80 glass-card border-l border-border/50 flex-col">
+          <SidebarContent />
         </div>
+      </div>
+
+      {/* Mobile Floating Button */}
+      <div className="md:hidden fixed bottom-6 right-6 z-20">
+        <Sheet open={showMobileSheet} onOpenChange={setShowMobileSheet}>
+          <SheetTrigger asChild>
+            <Button size="lg" className="rounded-full w-14 h-14 shadow-lg">
+              <Menu className="w-6 h-6" />
+              {tags.length > 0 && (
+                <Badge className="absolute -top-1 -right-1 w-6 h-6 rounded-full p-0 flex items-center justify-center">
+                  {tags.length}
+                </Badge>
+              )}
+            </Button>
+          </SheetTrigger>
+        </Sheet>
       </div>
     </section>
   );
