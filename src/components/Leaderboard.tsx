@@ -17,13 +17,22 @@ const stats = [
 
 export const Leaderboard = () => {
   return (
-    <section id="leaderboard" className="py-32 bg-background relative overflow-hidden">
-      <div className="absolute inset-0 opacity-20">
-        <img src={communityBg} alt="" className="w-full h-full object-cover" />
+    <section id="leaderboard" className="py-32 relative overflow-hidden">
+      {/* Background Image */}
+      <div className="absolute inset-0 z-0">
+        <img src={communityBg} alt="" className="w-full h-full object-cover opacity-20" />
       </div>
-      <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-background/60 to-background/80"></div>
       
-      <div className="container mx-auto px-6 relative">
+      {/* Gradient Overlays */}
+      <div className="absolute inset-0 z-[1]" style={{
+        background: 'linear-gradient(180deg, hsl(222 47% 4% / 0.8) 0%, hsl(222 47% 4% / 0.6) 50%, hsl(222 47% 4% / 0.8) 100%)'
+      }}></div>
+      
+      <div className="absolute inset-0 z-[1]" style={{
+        background: 'radial-gradient(circle at 50% 0%, hsl(25 95% 53% / 0.1) 0%, transparent 60%)'
+      }}></div>
+      
+      <div className="container mx-auto px-6 relative z-10">
         <div className="text-center mb-16">
           <h2 className="text-5xl md:text-6xl font-heading font-bold mb-6 tracking-tight">
             Community Impact

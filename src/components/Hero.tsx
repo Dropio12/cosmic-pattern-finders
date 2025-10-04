@@ -4,20 +4,24 @@ import { Link } from "react-router-dom";
 import heroMars from "@/assets/hero-mars.jpg";
 export const Hero = () => {
   return <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
-      {/* Gradient Background */}
-      <div className="absolute inset-0 z-0">
-        <div className="absolute inset-0 bg-background"></div>
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[600px] gradient-glow"></div>
-        <div className="absolute inset-0 opacity-30">
-          <img src={heroMars} alt="Mars surface with distant mountains" className="w-full h-full object-cover mix-blend-luminosity" />
-        </div>
+      {/* Background Layers */}
+      <div className="absolute inset-0 z-0 bg-background"></div>
+      
+      {/* Hero Image */}
+      <div className="absolute inset-0 z-[1] opacity-30">
+        <img src={heroMars} alt="Mars surface with distant mountains" className="w-full h-full object-cover mix-blend-luminosity" />
       </div>
+      
+      {/* Gradient Glow */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[600px] z-[2]" style={{
+        background: 'radial-gradient(circle at 50% 0%, hsl(25 95% 53% / 0.15) 0%, transparent 50%)'
+      }}></div>
 
       {/* Grid Pattern */}
-      <div className="absolute inset-0 z-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:4rem_4rem]"></div>
+      <div className="absolute inset-0 z-[3] bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:4rem_4rem]"></div>
 
       {/* Content */}
-      <div className="relative z-10 container mx-auto px-6 text-center">
+      <div className="relative z-[10] container mx-auto px-6 text-center">
         <div className="max-w-5xl mx-auto space-y-8 animate-fade-in">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-card border border-primary/20 mb-4">
             <div className="w-2 h-2 rounded-full bg-success animate-pulse"></div>
@@ -84,9 +88,14 @@ export const Hero = () => {
       </div>
 
       {/* Floating orbs */}
-      <div className="absolute bottom-20 left-20 w-32 h-32 rounded-full bg-primary/10 blur-3xl animate-float hidden lg:block"></div>
-      <div className="absolute top-40 right-20 w-40 h-40 rounded-full bg-success/10 blur-3xl animate-float hidden lg:block" style={{
-      animationDelay: '2s'
-    }}></div>
+      <div className="absolute bottom-20 left-20 w-32 h-32 rounded-full z-[5] hidden lg:block animate-float" style={{
+        background: 'radial-gradient(circle, hsl(25 95% 53% / 0.2) 0%, transparent 70%)',
+        filter: 'blur(40px)'
+      }}></div>
+      <div className="absolute top-40 right-20 w-40 h-40 rounded-full z-[5] hidden lg:block animate-float" style={{
+        background: 'radial-gradient(circle, hsl(142 71% 45% / 0.2) 0%, transparent 70%)',
+        filter: 'blur(40px)',
+        animationDelay: '2s'
+      }}></div>
     </section>;
 };
