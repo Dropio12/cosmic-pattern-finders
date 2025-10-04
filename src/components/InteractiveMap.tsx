@@ -16,7 +16,13 @@ type PatternTag = {
   notes: string;
 };
 
-export const InteractiveMap = () => {
+type InteractiveMapProps = {
+  mapImage: string;
+  title: string;
+  patternOptions: { value: string; label: string }[];
+};
+
+export const InteractiveMap = ({ mapImage, title, patternOptions }: InteractiveMapProps) => {
   const [zoom, setZoom] = useState(1);
   const [tags, setTags] = useState<PatternTag[]>([]);
   const [selectedTool, setSelectedTool] = useState<string>("pin");
@@ -160,11 +166,11 @@ export const InteractiveMap = () => {
   );
 
   return (
-    <section className="fixed inset-0 top-20 bg-background flex flex-col">
+    <section className="h-full bg-background flex flex-col">
       {/* Top Toolbar */}
       <div className="glass-card border-b border-border/50 px-4 md:px-6 py-3 md:py-4 flex items-center justify-between gap-2 md:gap-4 flex-wrap z-10">
         <div className="flex items-center gap-2">
-          <h1 className="text-lg md:text-2xl font-heading font-bold">Pattern Explorer</h1>
+          <h1 className="text-lg md:text-2xl font-heading font-bold">{title}</h1>
           <Badge variant="outline" className="bg-success/10 text-success border-success/20 hidden sm:flex">
             <div className="w-2 h-2 rounded-full bg-success animate-pulse mr-2"></div>
             Live
@@ -211,12 +217,11 @@ export const InteractiveMap = () => {
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="crater">Impact Crater</SelectItem>
-              <SelectItem value="geological">Geological Layer</SelectItem>
-              <SelectItem value="aeolian">Aeolian Feature</SelectItem>
-              <SelectItem value="fluvial">Fluvial Channel</SelectItem>
-              <SelectItem value="volcanic">Volcanic Structure</SelectItem>
-              <SelectItem value="tectonic">Tectonic Pattern</SelectItem>
+              {patternOptions.map((option) => (
+                <SelectItem key={option.value} value={option.value}>
+                  {option.label}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
 
@@ -256,7 +261,7 @@ export const InteractiveMap = () => {
             onMouseMove={handleMouseMove}
           >
             <img
-              src={marsMap}
+              src={mapImage}
               alt="Interactive planetary surface map for pattern recognition"
               className="w-full h-auto"
             />
