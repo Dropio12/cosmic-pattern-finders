@@ -1,20 +1,14 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import heroMars from "@/assets/hero-mars.jpg";
-
 export const Hero = () => {
-  return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
+  return <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
       {/* Gradient Background */}
       <div className="absolute inset-0 z-0">
         <div className="absolute inset-0 bg-background"></div>
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[600px] gradient-glow"></div>
         <div className="absolute inset-0 opacity-30">
-          <img
-            src={heroMars}
-            alt="Mars surface with distant mountains"
-            className="w-full h-full object-cover mix-blend-luminosity"
-          />
+          <img src={heroMars} alt="Mars surface with distant mountains" className="w-full h-full object-cover mix-blend-luminosity" />
         </div>
       </div>
 
@@ -58,7 +52,7 @@ export const Hero = () => {
             </div>
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-xs">✓</div>
-              <span>24k+ Patterns Tagged</span>
+              <span>2+ Patterns Tagged</span>
             </div>
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-xs">✓</div>
@@ -69,15 +63,15 @@ export const Hero = () => {
           {/* Stats Section */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-16 max-w-4xl mx-auto">
             <div className="glass-card rounded-xl p-6 border border-border/50">
-              <div className="text-4xl font-bold gradient-cta bg-clip-text text-transparent mb-2">98%</div>
+              <div className="text-4xl font-bold gradient-cta bg-clip-text text-transparent mb-2">idk</div>
               <div className="text-sm text-muted-foreground">AI Accuracy Rate</div>
             </div>
             <div className="glass-card rounded-xl p-6 border border-border/50">
-              <div className="text-4xl font-bold gradient-cta bg-clip-text text-transparent mb-2">156</div>
+              <div className="text-4xl font-bold gradient-cta bg-clip-text text-transparent mb-2">more than 1</div>
               <div className="text-sm text-muted-foreground">Countries Participating</div>
             </div>
             <div className="glass-card rounded-xl p-6 border border-border/50">
-              <div className="text-4xl font-bold gradient-cta bg-clip-text text-transparent mb-2">2.4M</div>
+              <div className="text-4xl font-bold gradient-cta bg-clip-text text-transparent mb-2">at least 2</div>
               <div className="text-sm text-muted-foreground">Patterns Analyzed</div>
             </div>
           </div>
@@ -86,7 +80,8 @@ export const Hero = () => {
 
       {/* Floating orbs */}
       <div className="absolute bottom-20 left-20 w-32 h-32 rounded-full bg-primary/10 blur-3xl animate-float hidden lg:block"></div>
-      <div className="absolute top-40 right-20 w-40 h-40 rounded-full bg-success/10 blur-3xl animate-float hidden lg:block" style={{ animationDelay: '2s' }}></div>
-    </section>
-  );
+      <div className="absolute top-40 right-20 w-40 h-40 rounded-full bg-success/10 blur-3xl animate-float hidden lg:block" style={{
+      animationDelay: '2s'
+    }}></div>
+    </section>;
 };
