@@ -35,12 +35,18 @@ export const InteractiveMap = ({ mapImage, title, patternOptions, explorerType }
   const [notes, setNotes] = useState("");
   const [showMobileSheet, setShowMobileSheet] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [pan, setPan] = useState({ x: 0, y: 0 });
+  const [isPanning, setIsPanning] = useState(false);
+  const [panStart, setPanStart] = useState({ x: 0, y: 0 });
   const { toast } = useToast();
   const { user } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
   const handleMapClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    // Don't add tags if we were panning
+    if (isPanning) return;
+    
     if ((e.target as HTMLElement).closest('.pattern-tag')) {
       return; // Don't add new tag if clicking on existing tag when not in eraser mode
     }
@@ -78,6 +84,52 @@ export const InteractiveMap = ({ mapImage, title, patternOptions, explorerType }
       removeTag(id);
     }
   };
+
+  // Handle right-click drag for panning
+  const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (e.button === 2) { // Right mouse button
+      e.preventDefault();
+      setIsPanning(true);
+      setPanStart({ x: e.clientX - pan.x, y: e.clientY - pan.y });
+    }
+  };
+
+  const handleMouseMoveMap = (e: React.MouseEvent<HTMLDivElement>) => {
+    // Update coordinates
+    handleMouseMove(e);
+    
+    // Handle panning
+    if (isPanning) {
+      setPan({
+        x: e.clientX - panStart.x,
+        y: e.clientY - panStart.y,
+      });
+    }
+  };
+
+  const handleMouseUp = () => {
+    setIsPanning(false);
+  };
+
+  const handleContextMenu = (e: React.MouseEvent) => {
+    e.preventDefault(); // Prevent context menu from appearing
+  };
+
+  // Handle Ctrl + scroll wheel for zooming
+  const handleWheel = (e: React.WheelEvent<HTMLDivElement>) => {
+    if (e.ctrlKey) {
+      e.preventDefault();
+      const delta = -e.deltaY * 0.01;
+      setZoom(Math.max(0.5, Math.min(20, zoom + delta)));
+    }
+  };
+
+  // Add mouse up listener to window to catch mouse up outside the map
+  useEffect(() => {
+    const handleWindowMouseUp = () => setIsPanning(false);
+    window.addEventListener('mouseup', handleWindowMouseUp);
+    return () => window.removeEventListener('mouseup', handleWindowMouseUp);
+  }, []);
 
   // Load saved patterns from database on mount
   useEffect(() => {
@@ -385,17 +437,21 @@ export const InteractiveMap = ({ mapImage, title, patternOptions, explorerType }
       {/* Main Content Area */}
       <div className="flex-1 flex overflow-hidden">
         {/* Map Container */}
-        <div className="flex-1 relative overflow-auto bg-black">
+        <div className="flex-1 relative overflow-hidden bg-black">
           <div
             className="relative min-h-full"
             style={{
-              transform: `scale(${zoom})`,
+              transform: `translate(${pan.x}px, ${pan.y}px) scale(${zoom})`,
               transformOrigin: 'center',
-              transition: 'transform 0.2s ease',
-              cursor: selectedTool === "eraser" ? "not-allowed" : "crosshair"
+              transition: isPanning ? 'none' : 'transform 0.2s ease',
+              cursor: isPanning ? 'grabbing' : selectedTool === "eraser" ? "not-allowed" : "crosshair"
             }}
             onClick={handleMapClick}
-            onMouseMove={handleMouseMove}
+            onMouseDown={handleMouseDown}
+            onMouseMove={handleMouseMoveMap}
+            onMouseUp={handleMouseUp}
+            onContextMenu={handleContextMenu}
+            onWheel={handleWheel}
           >
             <img
               src={mapImage}
