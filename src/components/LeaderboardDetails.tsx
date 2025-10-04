@@ -14,7 +14,7 @@ const achievements = [
     title: "Accuracy Masters",
     description: "Contributors with 95%+ AI verification rate",
     count: 127,
-    color: "g-gradient-to-b from-yellow-400 to-amber-600 text-transparent bg-clip-text"
+    color: "text-black"
   },
   {
     icon: Star,
