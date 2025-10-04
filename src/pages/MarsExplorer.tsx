@@ -1,4 +1,5 @@
-import { MarsLeafletMap } from "@/components/MarsLeafletMap";
+import { InteractiveMap } from "@/components/InteractiveMap";
+import marsMap from "@/assets/mars-map.jpg";
 
 const marsPatterns = [
   { value: "crater", label: "Impact Crater" },
@@ -26,7 +27,16 @@ const marsPatterns = [
 ];
 
 const MarsExplorer = () => {
-  return <MarsLeafletMap patternOptions={marsPatterns} />;
+  return (
+    <div className="fixed inset-0 bg-background">
+      <InteractiveMap 
+        mapImage={marsMap}
+        title="Mars Pattern Explorer"
+        patternOptions={marsPatterns}
+        explorerType="mars"
+      />
+    </div>
+  );
 };
 
 export default MarsExplorer;
