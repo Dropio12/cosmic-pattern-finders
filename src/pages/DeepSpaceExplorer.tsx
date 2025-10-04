@@ -36,6 +36,7 @@ const DeepSpaceExplorer = () => {
           mapImage={deepspaceMap}
           title="Deep Space Pattern Explorer"
           patternOptions={deepspacePatterns}
+          explorerType="deepspace"
         />
       </div>
     </>

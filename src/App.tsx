@@ -9,6 +9,7 @@ import MarsExplorer from "./pages/MarsExplorer";
 import DeepSpaceExplorer from "./pages/DeepSpaceExplorer";
 import Guide from "./pages/Guide";
 import Leaderboard from "./pages/Leaderboard";
+import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -26,6 +27,7 @@ const App = () => (
           <Route path="/explore/deepspace" element={<DeepSpaceExplorer />} />
           <Route path="/guide" element={<Guide />} />
           <Route path="/leaderboard" element={<Leaderboard />} />
+          <Route path="/auth" element={<Auth />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

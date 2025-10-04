@@ -36,6 +36,7 @@ const MarsExplorer = () => {
           mapImage={marsMap}
           title="Mars Pattern Explorer"
           patternOptions={marsPatterns}
+          explorerType="mars"
         />
       </div>
     </>

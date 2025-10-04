@@ -1,10 +1,18 @@
 import { Button } from "@/components/ui/button";
-import { Menu, X } from "lucide-react";
+import { Menu, X, LogOut } from "lucide-react";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
 
 export const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { user, signOut } = useAuth();
+  const navigate = useNavigate();
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate('/');
+  };
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 glass-card border-b border-border/50">
@@ -32,10 +40,21 @@ export const Header = () => {
           </div>
 
           <div className="hidden md:flex items-center space-x-3">
-            <Button variant="ghost" size="sm">Sign In</Button>
-            <Button variant="default" size="sm" asChild>
-              <Link to="/explore">Get Started</Link>
-            </Button>
+            {user ? (
+              <Button variant="ghost" size="sm" onClick={handleSignOut}>
+                <LogOut className="w-4 h-4 mr-2" />
+                Sign Out
+              </Button>
+            ) : (
+              <>
+                <Button variant="ghost" size="sm" asChild>
+                  <Link to="/auth">Sign In</Link>
+                </Button>
+                <Button variant="default" size="sm" asChild>
+                  <Link to="/explore">Get Started</Link>
+                </Button>
+              </>
+            )}
           </div>
 
           {/* Mobile Menu Button */}
@@ -80,12 +99,21 @@ export const Header = () => {
               Leaderboard
             </Link>
             <div className="flex flex-col space-y-2 pt-4">
-              <Button variant="ghost" className="w-full">
-                Sign In
-              </Button>
-              <Button variant="default" className="w-full" asChild>
-                <Link to="/explore">Get Started</Link>
-              </Button>
+              {user ? (
+                <Button variant="ghost" className="w-full" onClick={handleSignOut}>
+                  <LogOut className="w-4 h-4 mr-2" />
+                  Sign Out
+                </Button>
+              ) : (
+                <>
+                  <Button variant="ghost" className="w-full" asChild>
+                    <Link to="/auth">Sign In</Link>
+                  </Button>
+                  <Button variant="default" className="w-full" asChild>
+                    <Link to="/explore">Get Started</Link>
+                  </Button>
+                </>
+              )}
             </div>
           </div>
         )}

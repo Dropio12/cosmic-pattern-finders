@@ -1,12 +1,15 @@
 import { Button } from "@/components/ui/button";
 import { ZoomIn, ZoomOut, MapPin, Save, Trash2, Info, Menu, Eraser } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import marsMap from "@/assets/mars-map.jpg";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/integrations/supabase/client";
 
 type PatternTag = {
   x: number;
@@ -20,17 +23,22 @@ type InteractiveMapProps = {
   mapImage: string;
   title: string;
   patternOptions: { value: string; label: string }[];
+  explorerType: 'mars' | 'deepspace';
 };
 
-export const InteractiveMap = ({ mapImage, title, patternOptions }: InteractiveMapProps) => {
+export const InteractiveMap = ({ mapImage, title, patternOptions, explorerType }: InteractiveMapProps) => {
   const [zoom, setZoom] = useState(1);
   const [tags, setTags] = useState<PatternTag[]>([]);
   const [selectedTool, setSelectedTool] = useState<string>("pin");
-  const [patternType, setPatternType] = useState<string>("crater");
+  const [patternType, setPatternType] = useState<string>(patternOptions[0]?.value || "crater");
   const [mouseCoords, setMouseCoords] = useState({ x: 0, y: 0 });
   const [notes, setNotes] = useState("");
   const [showMobileSheet, setShowMobileSheet] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const { toast } = useToast();
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const handleMapClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if ((e.target as HTMLElement).closest('.pattern-tag')) {
@@ -68,6 +76,125 @@ export const InteractiveMap = ({ mapImage, title, patternOptions }: InteractiveM
     e.stopPropagation();
     if (selectedTool === "eraser") {
       removeTag(id);
+    }
+  };
+
+  // Load saved patterns from database on mount
+  useEffect(() => {
+    const loadSavedPatterns = async () => {
+      if (!user) return;
+
+      const { data, error } = await supabase
+        .from('saved_patterns')
+        .select('*')
+        .eq('user_id', user.id)
+        .eq('explorer_type', explorerType);
+
+      if (error) {
+        console.error('Error loading patterns:', error);
+        return;
+      }
+
+      if (data) {
+        const loadedTags = data.map(pattern => ({
+          id: Date.now() + Math.random(), // Generate unique ID
+          x: Number(pattern.x_coordinate),
+          y: Number(pattern.y_coordinate),
+          type: pattern.pattern_type,
+          notes: pattern.notes || '',
+        }));
+        setTags(loadedTags);
+      }
+    };
+
+    loadSavedPatterns();
+  }, [user, explorerType]);
+
+  // Handle pending patterns after login
+  useEffect(() => {
+    const savePendingPatterns = async () => {
+      if (!user) return;
+
+      const pendingPatterns = localStorage.getItem('pendingPatterns');
+      if (pendingPatterns) {
+        try {
+          const patterns = JSON.parse(pendingPatterns);
+          const pendingExplorerType = localStorage.getItem('pendingExplorerType');
+          
+          if (pendingExplorerType === explorerType) {
+            await savePatterns(patterns, true);
+            localStorage.removeItem('pendingPatterns');
+            localStorage.removeItem('pendingExplorerType');
+            toast({
+              title: "Patterns saved!",
+              description: "Your discoveries have been saved to your account.",
+            });
+          }
+        } catch (error) {
+          console.error('Error saving pending patterns:', error);
+        }
+      }
+    };
+
+    savePendingPatterns();
+  }, [user, explorerType]);
+
+  const savePatterns = async (patternsToSave: PatternTag[] = tags, skipToast = false) => {
+    if (!user) {
+      // Save to localStorage and redirect to auth
+      localStorage.setItem('pendingPatterns', JSON.stringify(patternsToSave));
+      localStorage.setItem('pendingExplorerType', explorerType);
+      
+      toast({
+        title: "Sign in required",
+        description: "Please sign in to save your discoveries.",
+      });
+      
+      navigate('/auth', { state: { from: location.pathname } });
+      return;
+    }
+
+    setIsSaving(true);
+
+    try {
+      // Delete existing patterns for this explorer type
+      await supabase
+        .from('saved_patterns')
+        .delete()
+        .eq('user_id', user.id)
+        .eq('explorer_type', explorerType);
+
+      // Insert new patterns
+      const patternsData = patternsToSave.map(tag => ({
+        user_id: user.id,
+        explorer_type: explorerType,
+        pattern_type: tag.type,
+        x_coordinate: tag.x,
+        y_coordinate: tag.y,
+        notes: tag.notes,
+      }));
+
+      const { error } = await supabase
+        .from('saved_patterns')
+        .insert(patternsData);
+
+      if (error) throw error;
+
+      if (!skipToast) {
+        toast({
+          title: "Progress saved!",
+          description: `${patternsToSave.length} pattern(s) have been saved.`,
+        });
+      }
+    } catch (error) {
+      console.error('Error saving patterns:', error);
+      toast({
+        title: "Save failed",
+        description: "Could not save your patterns. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -151,6 +278,16 @@ export const InteractiveMap = ({ mapImage, title, patternOptions }: InteractiveM
           <span className="text-muted-foreground">AI Verified:</span>
           <span className="text-success font-semibold">{Math.floor(tags.length * 0.82)}</span>
         </div>
+        <Button
+          variant="default"
+          size="sm"
+          className="w-full"
+          onClick={() => savePatterns()}
+          disabled={tags.length === 0 || isSaving}
+        >
+          <Save className="w-4 h-4 mr-2" />
+          {isSaving ? "Saving..." : user ? "Save Progress" : "Sign In to Save"}
+        </Button>
         <Button
           variant="destructive"
           size="sm"
