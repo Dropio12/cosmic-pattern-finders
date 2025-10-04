@@ -1,4 +1,5 @@
 import { Trophy, Target, CheckCircle, Zap, Tag } from "lucide-react";
+import communityBg from "@/assets/community-impact-bg.jpg";
 
 const topContributors = [
   { rank: 1, name: "SpaceExplorer42", points: 15240, avatar: "🚀" },
@@ -16,8 +17,11 @@ const stats = [
 
 export const Leaderboard = () => {
   return (
-    <section id="leaderboard" className="py-32 bg-background relative">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_50%,hsl(142_71%_45%/0.05),transparent_50%)]"></div>
+    <section id="leaderboard" className="py-32 bg-background relative overflow-hidden">
+      <div className="absolute inset-0 opacity-20">
+        <img src={communityBg} alt="" className="w-full h-full object-cover" />
+      </div>
+      <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-background/60 to-background/80"></div>
       
       <div className="container mx-auto px-6 relative">
         <div className="text-center mb-16">
