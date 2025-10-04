@@ -133,10 +133,10 @@ export const InteractiveMap = ({ mapImage, title, patternOptions, explorerType }
       if (!user) return;
 
       const { data, error } = await supabase
-        .from('saved_patterns')
+        .from('labels')
         .select('*')
         .eq('user_id', user.id)
-        .eq('explorer_type', explorerType);
+        .eq('name', explorerType);
 
       if (error) {
         console.error('Error loading patterns:', error);
@@ -144,13 +144,16 @@ export const InteractiveMap = ({ mapImage, title, patternOptions, explorerType }
       }
 
       if (data) {
-        const loadedTags = data.map(pattern => ({
-          id: Date.now() + Math.random(), // Generate unique ID
-          x: Number(pattern.x_coordinate),
-          y: Number(pattern.y_coordinate),
-          type: pattern.pattern_type,
-          notes: pattern.notes || '',
-        }));
+        const loadedTags = data.map(label => {
+          const position = label.position as { x: number; y: number; type: string; notes?: string };
+          return {
+            id: label.id,
+            x: position.x,
+            y: position.y,
+            type: position.type,
+            notes: position.notes || '',
+          };
+        });
         setTags(loadedTags);
       }
     };
@@ -207,24 +210,26 @@ export const InteractiveMap = ({ mapImage, title, patternOptions, explorerType }
     try {
       // Delete existing patterns for this explorer type
       await supabase
-        .from('saved_patterns')
+        .from('labels')
         .delete()
         .eq('user_id', user.id)
-        .eq('explorer_type', explorerType);
+        .eq('name', explorerType);
 
       // Insert new patterns
-      const patternsData = patternsToSave.map(tag => ({
+      const labelsData = patternsToSave.map(tag => ({
         user_id: user.id,
-        explorer_type: explorerType,
-        pattern_type: tag.type,
-        x_coordinate: tag.x,
-        y_coordinate: tag.y,
-        notes: tag.notes,
+        name: explorerType,
+        position: {
+          x: tag.x,
+          y: tag.y,
+          type: tag.type,
+          notes: tag.notes,
+        },
       }));
 
       const { error } = await supabase
-        .from('saved_patterns')
-        .insert(patternsData);
+        .from('labels')
+        .insert(labelsData);
 
       if (error) throw error;
 
