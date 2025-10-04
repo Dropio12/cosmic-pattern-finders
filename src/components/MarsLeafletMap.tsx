@@ -37,18 +37,13 @@ const createMarkerIcon = (color: string) => new Icon({
 const markerIcon = createMarkerIcon("#ef4444");
 
 function MapClickHandler({ 
-  onMapClick, 
-  setCurrentCoords 
+  onMapClick
 }: { 
   onMapClick: (lat: number, lng: number) => void;
-  setCurrentCoords: (coords: { lat: number; lng: number }) => void;
 }) {
   useMapEvents({
     click(e) {
       onMapClick(e.latlng.lat, e.latlng.lng);
-    },
-    mousemove(e) {
-      setCurrentCoords({ lat: e.latlng.lat, lng: e.latlng.lng });
     },
   });
   return null;
@@ -58,7 +53,6 @@ export const MarsLeafletMap = ({ patternOptions }: MarsLeafletMapProps) => {
   const [tags, setTags] = useState<PatternTag[]>([]);
   const [patternType, setPatternType] = useState<string>(patternOptions[0]?.value || "crater");
   const [notes, setNotes] = useState("");
-  const [currentCoords, setCurrentCoords] = useState({ lat: 0, lng: 0 });
   const [showMobileSheet, setShowMobileSheet] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const { toast } = useToast();
@@ -423,8 +417,8 @@ export const MarsLeafletMap = ({ patternOptions }: MarsLeafletMapProps) => {
             />
             <MapClickHandler 
               onMapClick={handleMapClick}
-              setCurrentCoords={setCurrentCoords}
             />
+            <CoordinatesPanel />
             {tags.map((tag) => (
               <Marker
                 key={tag.id}
@@ -451,8 +445,6 @@ export const MarsLeafletMap = ({ patternOptions }: MarsLeafletMapProps) => {
               </Marker>
             ))}
           </MapContainer>
-          
-          <CoordinatesPanel lat={currentCoords.lat} lng={currentCoords.lng} />
         </div>
 
         {/* Desktop Sidebar */}
