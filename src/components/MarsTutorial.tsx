@@ -56,38 +56,74 @@ const steps: Step[] = [
   {
     target: 'body',
     content: (
-      <div className="space-y-3">
-        <h3 className="text-lg font-semibold">Identifying Features</h3>
-        <p>Look for distinctive geological formations:</p>
-        <div className="space-y-3 mt-4">
-          <div className="flex gap-3 items-start">
-            <img src={craterExample} alt="Impact Crater" className="w-20 h-20 object-cover rounded-lg" />
-            <div>
-              <strong>Impact Craters:</strong>
-              <p className="text-sm">Circular depressions with raised rims</p>
-            </div>
-          </div>
-          <div className="flex gap-3 items-start">
-            <img src={tectonicExample} alt="Tectonic Pattern" className="w-20 h-20 object-cover rounded-lg" />
-            <div>
-              <strong>Tectonic Patterns:</strong>
-              <p className="text-sm">Linear features showing crustal movement</p>
-            </div>
-          </div>
-          <div className="flex gap-3 items-start">
-            <img src={volcanoExample} alt="Volcanic Structure" className="w-20 h-20 object-cover rounded-lg" />
-            <div>
-              <strong>Volcanic Structures:</strong>
-              <p className="text-sm">Dome-shaped formations</p>
-            </div>
-          </div>
-          <div className="flex gap-3 items-start">
-            <img src={depositExample} alt="Layered Deposit" className="w-20 h-20 object-cover rounded-lg" />
-            <div>
-              <strong>Layered Deposits:</strong>
-              <p className="text-sm">Visible stratification</p>
-            </div>
-          </div>
+      <div className="space-y-4 max-w-md">
+        <h3 className="text-xl font-bold text-primary">Impact Craters</h3>
+        <img src={craterExample} alt="Impact Crater Example" className="w-full h-48 object-cover rounded-lg shadow-lg" />
+        <div className="space-y-2">
+          <p className="font-semibold">How to identify:</p>
+          <ul className="list-disc pl-5 space-y-1 text-sm">
+            <li>Circular or elliptical depressions</li>
+            <li>Raised rim around the edge</li>
+            <li>Often has a central peak or flat floor</li>
+            <li>Ejecta blanket surrounding the crater</li>
+          </ul>
+        </div>
+      </div>
+    ),
+    placement: 'center',
+  },
+  {
+    target: 'body',
+    content: (
+      <div className="space-y-4 max-w-md">
+        <h3 className="text-xl font-bold text-primary">Tectonic Patterns</h3>
+        <img src={tectonicExample} alt="Tectonic Pattern Example" className="w-full h-48 object-cover rounded-lg shadow-lg" />
+        <div className="space-y-2">
+          <p className="font-semibold">How to identify:</p>
+          <ul className="list-disc pl-5 space-y-1 text-sm">
+            <li>Linear or curved fault lines</li>
+            <li>Parallel ridge systems (graben)</li>
+            <li>Wrinkle ridges showing compression</li>
+            <li>Evidence of crustal movement</li>
+          </ul>
+        </div>
+      </div>
+    ),
+    placement: 'center',
+  },
+  {
+    target: 'body',
+    content: (
+      <div className="space-y-4 max-w-md">
+        <h3 className="text-xl font-bold text-primary">Volcanic Structures</h3>
+        <img src={volcanoExample} alt="Volcanic Structure Example" className="w-full h-48 object-cover rounded-lg shadow-lg" />
+        <div className="space-y-2">
+          <p className="font-semibold">How to identify:</p>
+          <ul className="list-disc pl-5 space-y-1 text-sm">
+            <li>Dome or cone-shaped mountains</li>
+            <li>Caldera (collapsed summit crater)</li>
+            <li>Radial lava flow patterns</li>
+            <li>Smooth flanks from lava flows</li>
+          </ul>
+        </div>
+      </div>
+    ),
+    placement: 'center',
+  },
+  {
+    target: 'body',
+    content: (
+      <div className="space-y-4 max-w-md">
+        <h3 className="text-xl font-bold text-primary">Layered Deposits</h3>
+        <img src={depositExample} alt="Layered Deposit Example" className="w-full h-48 object-cover rounded-lg shadow-lg" />
+        <div className="space-y-2">
+          <p className="font-semibold">How to identify:</p>
+          <ul className="list-disc pl-5 space-y-1 text-sm">
+            <li>Visible horizontal stratification</li>
+            <li>Different colored or textured layers</li>
+            <li>Often found in canyon walls or cliffs</li>
+            <li>Evidence of sedimentary processes</li>
+          </ul>
         </div>
       </div>
     ),
