@@ -194,7 +194,7 @@ export default function BoundingBoxes() {
           }}
           style={{ marginRight: 8 }}
         >
-          {drawing ? 'Cancel Label' : 'Add Label'}
+          {drawing ? 'Cancel Label' : 'Add Feature'}
         </button>
         {drawing && <button onClick={cancelDrawing}>Abort</button>}
       </div>
