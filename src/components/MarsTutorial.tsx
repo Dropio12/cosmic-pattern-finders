@@ -136,11 +136,10 @@ export const TutorialButton = ({ onClick }: { onClick: () => void }) => {
     <Button
       onClick={onClick}
       variant="secondary"
-      size="sm"
-      className="fixed bottom-24 right-6 z-[1000] glass-card shadow-lg gap-2"
+      size="icon"
+      className="fixed bottom-24 right-6 z-[1000] glass-card shadow-lg"
     >
-      <HelpCircle className="w-4 h-4" />
-      Tutorial
+      <HelpCircle className="w-5 h-5" />
     </Button>
   );
 };
