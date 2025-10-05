@@ -25,7 +25,7 @@ export const Hero = () => {
         <div className="max-w-5xl mx-auto space-y-8 animate-fade-in">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-card border border-primary/20 mb-4">
             <div className="w-2 h-2 rounded-full bg-success animate-pulse"></div>
-            <span className="text-sm text-muted-foreground">AI-Powered Planetary Analysis • Live</span>
+            <span className="text-sm text-muted-foreground">Community-Driven Planetary Discovery • Live</span>
           </div>
           
           <h1 className="text-6xl md:text-8xl font-heading font-bold text-foreground leading-tight">
@@ -65,23 +65,23 @@ export const Hero = () => {
             </div>
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-xs">✓</div>
-              <span>Real-time AI Verification</span>
+              <span>Open Science Platform</span>
             </div>
           </div>
 
           {/* Stats Section */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-16 max-w-4xl mx-auto">
             <div className="glass-card rounded-xl p-6 border border-border/50">
-              <div className="text-4xl font-bold text-primary glow-text mb-2">idk</div>
-              <div className="text-sm text-muted-foreground">AI Accuracy Rate</div>
+              <div className="text-4xl font-bold text-primary glow-text mb-2">4+</div>
+              <div className="text-sm text-muted-foreground">Features Tagged</div>
             </div>
             <div className="glass-card rounded-xl p-6 border border-border/50">
-              <div className="text-4xl font-bold text-primary glow-text mb-2">more than 1</div>
-              <div className="text-sm text-muted-foreground">Countries Participating</div>
+              <div className="text-4xl font-bold text-primary glow-text mb-2">6</div>
+              <div className="text-sm text-muted-foreground">Active Explorers</div>
             </div>
             <div className="glass-card rounded-xl p-6 border border-border/50">
-              <div className="text-4xl font-bold text-primary glow-text mb-2">at least 2</div>
-              <div className="text-sm text-muted-foreground">Patterns Analyzed</div>
+              <div className="text-4xl font-bold text-primary glow-text mb-2">4 Types</div>
+              <div className="text-sm text-muted-foreground">Pattern Categories</div>
             </div>
           </div>
         </div>

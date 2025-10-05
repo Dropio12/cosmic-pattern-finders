@@ -4,7 +4,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { Telescope, Globe2 } from "lucide-react";
-import marsMap from "@/assets/mars-map.jpg";
+import marsMap from "@/assets/mars-landscape.jpg";
 import deepspaceMap from "@/assets/deepspace-map.jpg";
 
 const games = [
