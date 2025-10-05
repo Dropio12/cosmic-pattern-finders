@@ -1,7 +1,9 @@
 import './FeatureBoundingBox.css'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Marker, Rectangle, useMapEvents } from 'react-leaflet'
 import L from 'leaflet'
+import { supabase } from '@/integrations/supabase/client'
+import { useAuth } from '@/hooks/useAuth'
 
 type LatLng = { lat: number; lng: number }
 type Box = { id: number; bounds: [[number, number], [number, number]]; label: string }
@@ -65,8 +67,55 @@ export default function BoundingBoxes() {
   const [start, setStart] = useState<LatLng | null>(null)
   const [mousePos, setMousePos] = useState<LatLng | null>(null)
   const [boxes, setBoxes] = useState<Box[]>([])
+  const { user } = useAuth()
 
-  const handleMapClick = (p: LatLng) => {
+  // Load zones from database
+  useEffect(() => {
+    const loadZones = async () => {
+      const { data, error } = await supabase
+        .from('labels')
+        .select('*')
+        .not('position->corner1', 'is', null);
+
+      if (error) {
+        console.error('Error loading zones:', error);
+        return;
+      }
+
+      if (data) {
+        const loadedBoxes = data.map(zone => {
+          const pos = zone.position as any;
+          return {
+            id: zone.id,
+            bounds: makeBounds(pos.corner1, pos.corner2),
+            label: zone.name,
+          };
+        });
+        setBoxes(loadedBoxes);
+      }
+    };
+
+    loadZones();
+  }, []);
+
+  const saveZoneToDb = async (bounds: [[number, number], [number, number]], label: string) => {
+    const corner1 = { lat: bounds[0][0], lng: bounds[0][1] };
+    const corner2 = { lat: bounds[1][0], lng: bounds[1][1] };
+
+    const { error } = await supabase
+      .from('labels')
+      .insert({
+        name: label,
+        user_id: user?.id || null,
+        position: { corner1, corner2 },
+      });
+
+    if (error) {
+      console.error('Error saving zone:', error);
+    }
+  };
+
+  const handleMapClick = async (p: LatLng) => {
     if (!start) {
       // first click: set start point
       setStart(p)
@@ -76,6 +125,10 @@ export default function BoundingBoxes() {
       const label = window.prompt('Label for bounding box:', '') || ''
       const box: Box = { id: Date.now(), bounds, label }
       setBoxes((s) => [...s, box])
+      
+      // Save to database
+      await saveZoneToDb(bounds, label);
+      
       setStart(null)
       setMousePos(null)
       setDrawing(false)
