@@ -25,7 +25,7 @@ const marsPatterns = [
 
 const MarsExplorer = () => {
   const navigate = useNavigate();
-  const [showTutorial, setShowTutorial] = useState(false);
+  const [runTutorial, setRunTutorial] = useState(false);
 
   return (
     <div className="w-full h-screen relative">
@@ -40,29 +40,31 @@ const MarsExplorer = () => {
         Back to Explore
       </Button>
 
-      <TutorialButton onClick={() => setShowTutorial(true)} />
-      <MarsTutorial open={showTutorial} onOpenChange={setShowTutorial} />
+      <TutorialButton onClick={() => setRunTutorial(true)} />
+      <MarsTutorial run={runTutorial} onFinish={() => setRunTutorial(false)} />
 
-      <MapContainer
-        style={{ height: '100%', width: '100%' }}
-        center={[0, 0]}
-        zoom={2}
-        crs={CRS.EPSG4326}
-        bounds={[[-90, -180], [90, 180]]}
-        minZoom={1}
-        maxZoom={8}
-        worldCopyJump={true}
-      >
-        <TileLayer
-          url="https://trek.nasa.gov/tiles/Mars/EQ/Mars_Viking_MDIM21_ClrMosaic_global_232m/1.0.0//default/default028mm/{z}/{y}/{x}.jpg"
-          attribution="NASA/JPL/GSFC"
-          tileSize={256}
-          noWrap={false}
-        />
+      <div id="mars-map" className="w-full h-full">
+        <MapContainer
+          style={{ height: '100%', width: '100%' }}
+          center={[0, 0]}
+          zoom={2}
+          crs={CRS.EPSG4326}
+          bounds={[[-90, -180], [90, 180]]}
+          minZoom={1}
+          maxZoom={8}
+          worldCopyJump={true}
+        >
+          <TileLayer
+            url="https://trek.nasa.gov/tiles/Mars/EQ/Mars_Viking_MDIM21_ClrMosaic_global_232m/1.0.0//default/default028mm/{z}/{y}/{x}.jpg"
+            attribution="NASA/JPL/GSFC"
+            tileSize={256}
+            noWrap={false}
+          />
 
-        <BoundingBoxes />
-        <CoordinatesPanel />
-      </MapContainer>
+          <BoundingBoxes />
+          <CoordinatesPanel />
+        </MapContainer>
+      </div>
     </div>
   );
 };

@@ -30,7 +30,7 @@ export default function CoordinatesPanel() {
   if (!coords) return null
 
   return (
-    <div className="coords-panel">
+    <div id="coordinates-panel" className="coords-panel">
       Lat: {coords.lat.toFixed(5)} Lng: {coords.lng.toFixed(5)}
     </div>
   )
