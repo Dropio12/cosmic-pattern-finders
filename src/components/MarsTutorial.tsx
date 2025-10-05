@@ -135,9 +135,9 @@ const steps: Step[] = [
       <div className="space-y-3">
         <h3 className="text-lg font-semibold">How to Label Features</h3>
         <ol className="list-decimal pl-5 space-y-2 text-sm">
-          <li>Click "Add Feature" button (top right)</li>
-          <li>Select a feature type from the dropdown</li>
-          <li>Click twice on the map to draw a box around the feature</li>
+          <li>Click "Add Feature" button (bottom right)</li>
+          <li>Select a feature type from the panel that appears</li>
+          <li>Click twice on the map to draw a bounding box around the feature</li>
           <li>Your label is saved automatically!</li>
         </ol>
       </div>

@@ -15,18 +15,28 @@ const MarsExplorer = () => {
 
   return (
     <div className="w-full h-screen relative">
-      {/* Back Button */}
-      <Button
-        onClick={() => navigate('/explore')}
-        variant="secondary"
-        size="sm"
-        className="fixed bottom-6 left-6 z-[1000] glass-card shadow-lg"
-      >
-        <ArrowLeft className="w-4 h-4 mr-2" />
-        Back to Explore
-      </Button>
+      {/* Top Left Controls */}
+      <div className="fixed top-6 left-6 z-[1000] flex gap-3">
+        <Button
+          onClick={() => navigate('/explore')}
+          variant="secondary"
+          size="lg"
+          className="glass-card shadow-xl hover:scale-105 transition-transform"
+        >
+          <ArrowLeft className="w-5 h-5 mr-2" />
+          <span className="hidden sm:inline">Back</span>
+        </Button>
+        
+        <Button
+          onClick={() => setRunTutorial(true)}
+          variant="outline"
+          size="lg"
+          className="glass-card shadow-xl hover:scale-105 transition-transform"
+        >
+          <span className="text-lg">?</span>
+        </Button>
+      </div>
 
-      <TutorialButton onClick={() => setRunTutorial(true)} />
       <MarsTutorial run={runTutorial} onFinish={() => setRunTutorial(false)} />
 
       <div id="mars-map" className="w-full h-full">

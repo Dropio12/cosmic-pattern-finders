@@ -310,54 +310,61 @@ export default function BoundingBoxes() {
 
   return (
     <>
-      <div id="drawing-controls" className="absolute top-6 right-6 z-[1000] flex flex-col gap-2">
-        <div className="flex gap-2">
+      <div id="drawing-controls" className="fixed bottom-6 right-6 z-[1000] flex flex-col gap-3 max-w-[calc(100vw-3rem)]">
+        {!drawing ? (
+          /* Main FAB - Add Feature */
           <Button
-            onClick={() => {
-              setDrawing((d) => !d)
-              if (drawing) {
-                setStart(null)
-                setMousePos(null)
-                setSelectedFeature("")
-              }
-            }}
-            variant={drawing ? "secondary" : "default"}
-            size="sm"
-            className="glass-card shadow-lg"
+            onClick={() => setDrawing(true)}
+            size="lg"
+            className="glass-card shadow-2xl hover:scale-105 transition-all duration-300 h-14 px-6 sm:px-8 text-base sm:text-lg font-semibold bg-primary/90 hover:bg-primary"
           >
-            {drawing ? (
-              <>
-                <X className="w-4 h-4 mr-2" />
-                Cancel
-              </>
-            ) : (
-              <>
-                <Tag className="w-4 h-4 mr-2" />
-                Add Feature
-              </>
-            )}
+            <Tag className="w-5 h-5 mr-2 sm:mr-3" />
+            Add Feature
           </Button>
-        </div>
-        
-        {drawing && (
-          <Select value={selectedFeature} onValueChange={setSelectedFeature}>
-            <SelectTrigger className="glass-card shadow-lg border-primary/20">
-              <SelectValue placeholder="Select feature type..." />
-            </SelectTrigger>
-            <SelectContent className="z-[10000] bg-background border-border">
-              {featureTypes.map((feature) => {
-                const Icon = feature.icon;
-                return (
-                  <SelectItem key={feature.value} value={feature.value}>
-                    <div className="flex items-center gap-2">
-                      <Icon className="w-4 h-4" />
-                      <span>{feature.label}</span>
-                    </div>
-                  </SelectItem>
-                );
-              })}
-            </SelectContent>
-          </Select>
+        ) : (
+          /* Drawing Mode Panel */
+          <div className="glass-card shadow-2xl rounded-xl p-4 sm:p-5 space-y-3 backdrop-blur-xl bg-background/95 border border-primary/20">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-sm font-semibold text-foreground/80">Select Feature Type</span>
+              <Button
+                onClick={cancelDrawing}
+                variant="ghost"
+                size="sm"
+                className="h-8 w-8 p-0 hover:bg-destructive/20"
+              >
+                <X className="w-4 h-4" />
+              </Button>
+            </div>
+            
+            <Select value={selectedFeature} onValueChange={setSelectedFeature}>
+              <SelectTrigger className="h-12 border-primary/30 bg-background/50 hover:bg-background/80 transition-colors">
+                <SelectValue placeholder="Choose a feature..." />
+              </SelectTrigger>
+              <SelectContent className="z-[10000] bg-background/95 backdrop-blur-xl border-primary/20">
+                {featureTypes.map((feature) => {
+                  const Icon = feature.icon;
+                  return (
+                    <SelectItem 
+                      key={feature.value} 
+                      value={feature.value}
+                      className="cursor-pointer py-3"
+                    >
+                      <div className="flex items-center gap-3">
+                        <Icon className="w-5 h-5 text-primary" />
+                        <span className="font-medium">{feature.label}</span>
+                      </div>
+                    </SelectItem>
+                  );
+                })}
+              </SelectContent>
+            </Select>
+            
+            {start && (
+              <div className="text-xs text-muted-foreground pt-2 border-t border-primary/10">
+                Click on the map to complete the bounding box
+              </div>
+            )}
+          </div>
         )}
       </div>
 
