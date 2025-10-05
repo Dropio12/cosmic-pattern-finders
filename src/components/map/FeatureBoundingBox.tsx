@@ -5,15 +5,7 @@ import L from 'leaflet'
 import { supabase } from '@/integrations/supabase/client'
 import { useAuth } from '@/hooks/useAuth'
 import { Button } from '@/components/ui/button'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Tag, X, Circle, Layers, Flame, Mountain } from 'lucide-react'
-
-const featureTypes = [
-  { value: "Impact Crater", label: "Impact Crater", icon: Circle },
-  { value: "Tectonic Pattern", label: "Tectonic Pattern", icon: Layers },
-  { value: "Volcanic Structure", label: "Volcanic Structure", icon: Flame },
-  { value: "Layered Deposit", label: "Layered Deposit", icon: Mountain },
-];
+import { Tag, X } from 'lucide-react'
 
 type LatLng = { lat: number; lng: number }
 type Box = { id: number; bounds: [[number, number], [number, number]]; label: string; user_id: string | null; verified: boolean }
@@ -74,7 +66,6 @@ function MapEventsHandler({
 
 export default function BoundingBoxes() {
   const [drawing, setDrawing] = useState(false)
-  const [selectedFeature, setSelectedFeature] = useState<string>("")
   const [start, setStart] = useState<LatLng | null>(null)
   const [mousePos, setMousePos] = useState<LatLng | null>(null)
   const [boxes, setBoxes] = useState<Box[]>([])
@@ -178,20 +169,22 @@ export default function BoundingBoxes() {
   };
 
   const handleMapClick = async (p: LatLng) => {
-    if (!drawing) return;
-    
-    if (!selectedFeature) {
-      alert('Please select a feature type from the dropdown first!');
-      return;
-    }
-    
     if (!start) {
       // first click: set start point
       setStart(p)
     } else {
-      // second click: finalize box with selected feature as label
+      // second click: finalize box, prompt for label
       const bounds = makeBounds(start, p)
-      const label = selectedFeature;
+      const labelInput = window.prompt('Label for bounding box (max 100 characters):', '') || '';
+      
+      // Validate label input
+      const label = labelInput.trim().slice(0, 100);
+      if (!label) {
+        console.error('Label cannot be empty');
+        setDrawing(false);
+        setStart(null);
+        return;
+      }
       
       // Save to database first to get the real ID
       const savedZone = await saveZoneToDb(bounds, label);
@@ -210,7 +203,6 @@ export default function BoundingBoxes() {
       setStart(null)
       setMousePos(null)
       setDrawing(false)
-      setSelectedFeature("")
     }
   }
 
@@ -305,66 +297,43 @@ export default function BoundingBoxes() {
     setStart(null)
     setMousePos(null)
     setDrawing(false)
-    setSelectedFeature("")
   }
 
   return (
     <>
-      <div id="drawing-controls" className="fixed bottom-6 right-6 z-[1000] flex flex-col gap-3 max-w-[calc(100vw-3rem)]">
-        {!drawing ? (
-          /* Main FAB - Add Feature */
+      <div className="absolute top-4 right-4 z-[1000] flex gap-2">
+        <Button
+          onClick={() => {
+            setDrawing((d) => !d)
+            setStart(null)
+            setMousePos(null)
+          }}
+          variant={drawing ? "secondary" : "default"}
+          size="sm"
+          className="glass-card shadow-lg"
+        >
+          {drawing ? (
+            <>
+              <X className="w-4 h-4 mr-2" />
+              Cancel
+            </>
+          ) : (
+            <>
+              <Tag className="w-4 h-4 mr-2" />
+              Add Feature
+            </>
+          )}
+        </Button>
+        {drawing && start && (
           <Button
-            onClick={() => setDrawing(true)}
-            size="lg"
-            className="glass-card shadow-2xl hover:scale-105 transition-all duration-300 h-14 px-6 sm:px-8 text-base sm:text-lg font-semibold bg-primary/90 hover:bg-primary"
+            onClick={cancelDrawing}
+            variant="destructive"
+            size="sm"
+            className="shadow-lg"
           >
-            <Tag className="w-5 h-5 mr-2 sm:mr-3" />
-            Add Feature
+            <X className="w-4 h-4 mr-2" />
+            Abort
           </Button>
-        ) : (
-          /* Drawing Mode Panel */
-          <div className="glass-card shadow-2xl rounded-xl p-4 sm:p-5 space-y-3 backdrop-blur-xl bg-background/95 border border-primary/20">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-sm font-semibold text-foreground/80">Select Feature Type</span>
-              <Button
-                onClick={cancelDrawing}
-                variant="ghost"
-                size="sm"
-                className="h-8 w-8 p-0 hover:bg-destructive/20"
-              >
-                <X className="w-4 h-4" />
-              </Button>
-            </div>
-            
-            <Select value={selectedFeature} onValueChange={setSelectedFeature}>
-              <SelectTrigger className="h-12 border-primary/30 bg-background/50 hover:bg-background/80 transition-colors">
-                <SelectValue placeholder="Choose a feature..." />
-              </SelectTrigger>
-              <SelectContent className="z-[10000] bg-background/95 backdrop-blur-xl border-primary/20">
-                {featureTypes.map((feature) => {
-                  const Icon = feature.icon;
-                  return (
-                    <SelectItem 
-                      key={feature.value} 
-                      value={feature.value}
-                      className="cursor-pointer py-3"
-                    >
-                      <div className="flex items-center gap-3">
-                        <Icon className="w-5 h-5 text-primary" />
-                        <span className="font-medium">{feature.label}</span>
-                      </div>
-                    </SelectItem>
-                  );
-                })}
-              </SelectContent>
-            </Select>
-            
-            {start && (
-              <div className="text-xs text-muted-foreground pt-2 border-t border-primary/10">
-                Click on the map to complete the bounding box
-              </div>
-            )}
-          </div>
         )}
       </div>
 

@@ -9,34 +9,37 @@ import { useNavigate } from 'react-router-dom'
 import { MarsTutorial, TutorialButton } from '@/components/MarsTutorial'
 import FeatureMarkers from '@/components/map/FeatureMarkers'
 
+const marsPatterns = [
+  { value: "crater", label: "Impact Crater" },
+  { value: "tectonic", label: "Tectonic Pattern" },
+  { value: "graben", label: "Graben/Fault" },
+  { value: "wrinkle-ridge", label: "Wrinkle Ridge" },
+  { value: "polar-ice", label: "Polar Ice Cap" },
+  { value: "layered-deposit", label: "Layered Deposit" },
+  { value: "landslide", label: "Landslide/Mass Wasting" },
+  { value: "erosion", label: "Erosion Pattern" },
+  { value: "gully", label: "Gully Formation" },
+  { value: "recurring-slope", label: "Recurring Slope Lineae (RSL)" },
+];
+
 const MarsExplorer = () => {
   const navigate = useNavigate();
   const [runTutorial, setRunTutorial] = useState(false);
 
   return (
     <div className="w-full h-screen relative">
-      {/* Top Left Controls */}
-      <div className="fixed top-6 left-6 z-[1000] flex gap-3">
-        <Button
-          onClick={() => navigate('/explore')}
-          variant="secondary"
-          size="lg"
-          className="glass-card shadow-xl hover:scale-105 transition-transform"
-        >
-          <ArrowLeft className="w-5 h-5 mr-2" />
-          <span className="hidden sm:inline">Back</span>
-        </Button>
-        
-        <Button
-          onClick={() => setRunTutorial(true)}
-          variant="outline"
-          size="lg"
-          className="glass-card shadow-xl hover:scale-105 transition-transform"
-        >
-          <span className="text-lg">?</span>
-        </Button>
-      </div>
+      {/* Back Button */}
+      <Button
+        onClick={() => navigate('/explore')}
+        variant="secondary"
+        size="sm"
+        className="fixed bottom-24 left-4 z-[1000] glass-card shadow-lg"
+      >
+        <ArrowLeft className="w-4 h-4 mr-2" />
+        Back to Explore
+      </Button>
 
+      <TutorialButton onClick={() => setRunTutorial(true)} />
       <MarsTutorial run={runTutorial} onFinish={() => setRunTutorial(false)} />
 
       <div id="mars-map" className="w-full h-full">
