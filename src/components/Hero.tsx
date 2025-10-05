@@ -14,8 +14,8 @@ export const Hero = () => {
       
       {/* Gradient Glow */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[600px] z-[2]" style={{
-        background: 'radial-gradient(circle at 50% 0%, hsl(260 70% 60% / 0.15) 0%, transparent 50%)'
-      }}></div>
+      background: 'radial-gradient(circle at 50% 0%, hsl(260 70% 60% / 0.15) 0%, transparent 50%)'
+    }}></div>
 
       {/* Grid Pattern */}
       <div className="absolute inset-0 z-[3] bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:4rem_4rem]"></div>
@@ -23,12 +23,12 @@ export const Hero = () => {
       {/* Content */}
       <div className="relative z-[10] container mx-auto px-6 text-center">
         <div className="max-w-5xl mx-auto space-y-8 animate-fade-in">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-card border border-primary/20 mb-12">
+          <div className="inline-flex items-center gap-2 py-2 rounded-full glass-card border border-primary/20 mb-12 px-[15px] mx-0 my-[23px]">
             <div className="w-2 h-2 rounded-full bg-success animate-pulse"></div>
             <span className="text-sm text-muted-foreground">Community-Driven Planetary Discovery • Live</span>
           </div>
           
-          <h1 className="text-6xl md:text-8xl font-heading font-bold text-foreground leading-tight">
+          <h1 className="text-6xl md:text-8xl font-heading font-bold text-foreground leading-tight mx-0 my-[3px]">
             Discover the{" "}
             <span className="text-primary glow-text">
               Unknown
@@ -84,13 +84,13 @@ export const Hero = () => {
 
       {/* Floating orbs */}
       <div className="absolute bottom-20 left-20 w-32 h-32 rounded-full z-[5] hidden lg:block animate-float" style={{
-        background: 'radial-gradient(circle, hsl(260 70% 60% / 0.2) 0%, transparent 70%)',
-        filter: 'blur(40px)'
-      }}></div>
+      background: 'radial-gradient(circle, hsl(260 70% 60% / 0.2) 0%, transparent 70%)',
+      filter: 'blur(40px)'
+    }}></div>
       <div className="absolute top-40 right-20 w-40 h-40 rounded-full z-[5] hidden lg:block animate-float" style={{
-        background: 'radial-gradient(circle, hsl(180 80% 55% / 0.2) 0%, transparent 70%)',
-        filter: 'blur(40px)',
-        animationDelay: '2s'
-      }}></div>
+      background: 'radial-gradient(circle, hsl(180 80% 55% / 0.2) 0%, transparent 70%)',
+      filter: 'blur(40px)',
+      animationDelay: '2s'
+    }}></div>
     </section>;
 };
