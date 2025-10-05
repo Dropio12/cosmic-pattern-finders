@@ -17,7 +17,7 @@ const steps: Step[] = [
     content: (
       <div className="space-y-3">
         <h3 className="text-xl font-bold text-primary">Welcome to Mars Explorer!</h3>
-        <p>In this tool, you'll help identify and label geological features on Mars. Your contributions will aid scientists in understanding Martian geology and history.</p>
+        <p>Help scientists identify geological features on Mars! Your contributions will aid in understanding Martian geology and support future missions.</p>
       </div>
     ),
     placement: 'center',
@@ -28,30 +28,30 @@ const steps: Step[] = [
     content: (
       <div className="space-y-3">
         <h3 className="text-lg font-semibold">The Mars Map</h3>
-        <p>This is your interactive Mars surface map. Use your mouse wheel or touchpad to zoom in and out. Click and drag to pan around and explore different regions.</p>
+        <p>This interactive map shows the real surface of Mars from NASA imagery. Use your mouse wheel to zoom and drag to pan around different regions.</p>
       </div>
     ),
     placement: 'bottom',
+  },
+  {
+    target: '#feature-selector',
+    content: (
+      <div className="space-y-3">
+        <h3 className="text-lg font-semibold">Feature Selector</h3>
+        <p>First, select the type of geological feature you want to label. Choose from Impact Craters, Tectonic Patterns, Volcanic Structures, or Layered Deposits.</p>
+      </div>
+    ),
+    placement: 'right',
   },
   {
     target: '#coordinates-panel',
     content: (
       <div className="space-y-3">
         <h3 className="text-lg font-semibold">Coordinates Panel</h3>
-        <p>This panel shows your current location on Mars. Move your mouse around the map to see the coordinates update in real-time.</p>
+        <p>This panel shows your current location on Mars in latitude and longitude. The coordinates update as you move your mouse.</p>
       </div>
     ),
     placement: 'left',
-  },
-  {
-    target: 'body',
-    content: (
-      <div className="space-y-3">
-        <h3 className="text-lg font-semibold">Drawing Bounding Boxes</h3>
-        <p>To label a feature, you'll draw bounding boxes around geological formations. Click on the map to set corners and create boxes around features like craters, channels, or volcanic structures.</p>
-      </div>
-    ),
-    placement: 'center',
   },
   {
     target: 'body',
@@ -133,8 +133,24 @@ const steps: Step[] = [
     target: 'body',
     content: (
       <div className="space-y-3">
-        <h3 className="text-lg font-semibold">You're Ready!</h3>
-        <p>Every label you create helps build a comprehensive database of Martian geology and supports NASA mission planning. Thank you for contributing to space exploration! 🚀</p>
+        <h3 className="text-lg font-semibold">How to Label Features</h3>
+        <ol className="list-decimal pl-5 space-y-2 text-sm">
+          <li>Select a feature type from the left panel</li>
+          <li>Click "Add Feature" button on the top right</li>
+          <li>Click twice on the map to draw a bounding box around the feature</li>
+          <li>Your label will be saved automatically!</li>
+        </ol>
+      </div>
+    ),
+    placement: 'center',
+  },
+  {
+    target: 'body',
+    content: (
+      <div className="space-y-3">
+        <h3 className="text-lg font-semibold">You're Ready to Explore Mars! 🚀</h3>
+        <p>Every label you create helps build a comprehensive database of Martian geology. Your contributions support NASA mission planning and scientific research.</p>
+        <p className="text-sm text-muted-foreground">Start exploring and labeling features to earn points on the leaderboard!</p>
       </div>
     ),
     placement: 'center',

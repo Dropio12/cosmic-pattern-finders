@@ -64,7 +64,7 @@ function MapEventsHandler({
   return null
 }
 
-export default function BoundingBoxes() {
+export default function BoundingBoxes({ selectedFeature }: { selectedFeature: string | null }) {
   const [drawing, setDrawing] = useState(false)
   const [start, setStart] = useState<LatLng | null>(null)
   const [mousePos, setMousePos] = useState<LatLng | null>(null)
@@ -169,22 +169,18 @@ export default function BoundingBoxes() {
   };
 
   const handleMapClick = async (p: LatLng) => {
+    if (!selectedFeature) {
+      alert('Please select a feature type first!');
+      return;
+    }
+    
     if (!start) {
       // first click: set start point
       setStart(p)
     } else {
-      // second click: finalize box, prompt for label
+      // second click: finalize box with selected feature as label
       const bounds = makeBounds(start, p)
-      const labelInput = window.prompt('Label for bounding box (max 100 characters):', '') || '';
-      
-      // Validate label input
-      const label = labelInput.trim().slice(0, 100);
-      if (!label) {
-        console.error('Label cannot be empty');
-        setDrawing(false);
-        setStart(null);
-        return;
-      }
+      const label = selectedFeature;
       
       // Save to database first to get the real ID
       const savedZone = await saveZoneToDb(bounds, label);
@@ -301,9 +297,13 @@ export default function BoundingBoxes() {
 
   return (
     <>
-      <div className="absolute top-4 right-4 z-[1000] flex gap-2">
+      <div className="absolute top-6 right-6 z-[1000] flex gap-2">
         <Button
           onClick={() => {
+            if (!selectedFeature && !drawing) {
+              alert('Please select a feature type first!');
+              return;
+            }
             setDrawing((d) => !d)
             setStart(null)
             setMousePos(null)
@@ -311,11 +311,12 @@ export default function BoundingBoxes() {
           variant={drawing ? "secondary" : "default"}
           size="sm"
           className="glass-card shadow-lg"
+          disabled={!selectedFeature && !drawing}
         >
           {drawing ? (
             <>
               <X className="w-4 h-4 mr-2" />
-              Cancel
+              Cancel Drawing
             </>
           ) : (
             <>
@@ -324,17 +325,6 @@ export default function BoundingBoxes() {
             </>
           )}
         </Button>
-        {drawing && start && (
-          <Button
-            onClick={cancelDrawing}
-            variant="destructive"
-            size="sm"
-            className="shadow-lg"
-          >
-            <X className="w-4 h-4 mr-2" />
-            Abort
-          </Button>
-        )}
       </div>
 
       {/* map events: click + mousemove for preview */}
