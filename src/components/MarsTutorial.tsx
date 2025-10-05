@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { ChevronLeft, ChevronRight, HelpCircle } from 'lucide-react';
 
@@ -68,9 +68,6 @@ export const MarsTutorial = ({ open, onOpenChange }: MarsTutorialProps) => {
       <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
         <DialogHeader className="bg-gradient-to-r from-cyan-500 to-cyan-600 text-white -m-6 mb-4 p-4 rounded-t-lg">
           <DialogTitle className="text-2xl font-bold text-center">TUTORIAL</DialogTitle>
-          <DialogDescription className="sr-only">
-            Step-by-step guide for labeling Mars geological features
-          </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-6 px-2">
@@ -138,11 +135,11 @@ export const TutorialButton = ({ onClick }: { onClick: () => void }) => {
   return (
     <Button
       onClick={onClick}
-      variant="default"
+      variant="secondary"
       size="sm"
-      className="fixed bottom-6 right-6 z-[9999] shadow-xl gap-2 animate-pulse hover:animate-none"
+      className="fixed bottom-24 right-6 z-[1000] glass-card shadow-lg gap-2"
     >
-      <HelpCircle className="w-5 h-5" />
+      <HelpCircle className="w-4 h-4" />
       Tutorial
     </Button>
   );

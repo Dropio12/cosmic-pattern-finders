@@ -28,23 +28,22 @@ const MarsExplorer = () => {
   const [showTutorial, setShowTutorial] = useState(false);
 
   return (
-    <>
+    <div className="w-full h-screen relative">
+      {/* Back Button */}
+      <Button
+        onClick={() => navigate('/explore')}
+        variant="secondary"
+        size="sm"
+        className="absolute top-4 left-4 z-[1000] glass-card shadow-lg"
+      >
+        <ArrowLeft className="w-4 h-4 mr-2" />
+        Back to Explore
+      </Button>
+
       <TutorialButton onClick={() => setShowTutorial(true)} />
       <MarsTutorial open={showTutorial} onOpenChange={setShowTutorial} />
-      
-      <div className="w-full h-screen relative">
-        {/* Back Button */}
-        <Button
-          onClick={() => navigate('/explore')}
-          variant="secondary"
-          size="sm"
-          className="absolute top-4 left-4 z-[1000] glass-card shadow-lg"
-        >
-          <ArrowLeft className="w-4 h-4 mr-2" />
-          Back to Explore
-        </Button>
 
-        <MapContainer
+      <MapContainer
         style={{ height: '100%', width: '100%' }}
         center={[0, 0]}
         zoom={2}
@@ -64,8 +63,7 @@ const MarsExplorer = () => {
         <BoundingBoxes />
         <CoordinatesPanel />
       </MapContainer>
-      </div>
-    </>
+    </div>
   );
 };
 
