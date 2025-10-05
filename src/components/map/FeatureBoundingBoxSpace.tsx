@@ -85,7 +85,16 @@ export default function BoundingBoxes() {
         setStart(null);
         return;
       }
-
+    
+      const box: Box = { 
+          id: 0, 
+          bounds, 
+          label, 
+          user_id: null,
+          verified: false
+        }
+      setBoxes((s) => [...s, box])
+      
       setStart(null)
       setMousePos(null)
       setDrawing(false)
