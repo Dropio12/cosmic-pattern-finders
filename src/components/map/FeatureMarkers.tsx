@@ -63,10 +63,21 @@ const parseCsv = (text: string): FeatureRow[] => {
 };
 
 export default function FeatureMarkers() {
-  const [features, setFeatures] = useState<FeatureRow[]>([]);
+  // visibility state for markers control
+  const [visible, setVisible] = useState(false);
 
+  // feature rows
+  const [features, setFeatures] = useState<FeatureRow[]>([]);
+  const [loading, setLoading] = useState(false);
+
+  // Load CSV lazily when user enables markers
   useEffect(() => {
     let mounted = true;
+    if (!visible) return;
+    // if already loaded, don't fetch again
+    if (features.length > 0) return;
+
+    setLoading(true);
     fetch('/marker_features.csv')
       .then(r => {
         if (!r.ok) throw new Error('CSV fetch failed');
@@ -79,13 +90,35 @@ export default function FeatureMarkers() {
       })
       .catch(err => {
         console.warn('Could not load marker_features.csv:', err);
+      })
+      .finally(() => {
+        if (mounted) setLoading(false);
       });
+
     return () => { mounted = false; };
-  }, []);
+  }, [visible, features.length]);
 
   return (
     <>
-      {features.map((f, idx) => {
+      {/* control button positioned under the Add Feature control */}
+      <div style={{ position: 'absolute', zIndex: 1000, right: 10, top: 60 }}>
+        <button
+          onClick={() => setVisible(v => !v)}
+          style={{ marginRight: 8 }}
+        >
+          {visible ? 'Hide Known Features' : 'Show Known Features'}
+        </button>
+      </div>
+
+      {/* optional loading indicator */}
+      {visible && loading && (
+        <div style={{ position: 'absolute', zIndex: 1000, right: 10, top: 100, background: 'rgba(255,255,255,0.9)', padding: 6, borderRadius: 4 }}>
+          Loading markers...
+        </div>
+      )}
+
+      {/* render markers only when visible */}
+      {visible && features.map((f, idx) => {
         const color = f.color ?? getColorForFeature(f.feature);
         return (
           <CircleMarker
