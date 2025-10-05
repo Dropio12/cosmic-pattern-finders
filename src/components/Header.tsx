@@ -41,7 +41,12 @@ export const Header = () => {
 
           <div className="hidden md:flex items-center space-x-3">
             {user ? (
-              <Button variant="ghost" size="sm" onClick={handleSignOut}>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={handleSignOut}
+                className="border-destructive/50 text-destructive hover:bg-destructive hover:text-destructive-foreground transition-all duration-200"
+              >
                 <LogOut className="w-4 h-4 mr-2" />
                 Sign Out
               </Button>
@@ -100,7 +105,11 @@ export const Header = () => {
             </Link>
             <div className="flex flex-col space-y-2 pt-4">
               {user ? (
-                <Button variant="ghost" className="w-full" onClick={handleSignOut}>
+                <Button 
+                  variant="outline" 
+                  className="w-full border-destructive/50 text-destructive hover:bg-destructive hover:text-destructive-foreground transition-all duration-200" 
+                  onClick={handleSignOut}
+                >
                   <LogOut className="w-4 h-4 mr-2" />
                   Sign Out
                 </Button>
