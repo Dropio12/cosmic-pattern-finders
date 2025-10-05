@@ -55,48 +55,23 @@ const parseCsv = (text: string): FeatureRow[] => {
       obj[key] = typeof v === 'string' ? v.trim() : v;
     });
 
-    const latKeys = ['lat', 'latitude', 'y'];
-    const lonKeys = ['lon', 'lng', 'longitude', 'x'];
+    let lat = Number(obj['center latitude']);
+    let lon = Number(obj['center longitude']);
 
-    let lat = undefined as number | undefined;
-    let lon = undefined as number | undefined;
+    if (lon > 180) lon -= 360;
 
-    for (const k of latKeys) {
-      if (obj[k] !== undefined && obj[k] !== '') { lat = Number(obj[k]); break; }
+    if (Number.isNaN(lat) || Number.isNaN(lon)) {
+      console.warn('Skipping row with invalid lat/lon:', lat, lon, obj);
+      continue;
     }
-    for (const k of lonKeys) {
-      if (obj[k] !== undefined && obj[k] !== '') { lon = Number(obj[k]); break; }
-    }
-
-    if (lat === undefined || Number.isNaN(lat) || lon === undefined || Number.isNaN(lon)) {
-      // fallback: find numeric columns in row (preserve order)
-      const numericVals = Object.values(obj)
-        .map(v => (v === '' ? NaN : Number(v)))
-        .filter(v => !Number.isNaN(v));
-      if (numericVals.length >= 2) {
-        // assume first is lon then lat (common in some exports); try to detect and swap later
-        lon = numericVals[0];
-        lat = numericVals[1];
-      } else {
-        continue; // skip row if no numeric coords
-      }
-    }
-
-    // change lon from 360 to -180..180
-    lon = lon - 360;
-
-    const featureKey = Object.keys(obj).find(k => ['feature','type','label','category','class'].includes(k)) ?? 'feature';
-    const radiusKey = Object.keys(obj).find(k => ['radius','size','r'].includes(k));
-    const colorKey = Object.keys(obj).find(k => ['color','colour','fillcolor'].includes(k));
-    const nameKey = Object.keys(obj).find(k => ['name','id','title'].includes(k));
 
     const parsedRow: FeatureRow = {
       lat,
       lon,
-      feature: obj[featureKey],
-      radius: radiusKey ? Number(obj[radiusKey]) : undefined,
-      color: colorKey ? obj[colorKey] : undefined,
-      name: nameKey ? obj[nameKey] : undefined,
+      feature: obj['feature type'],
+      diameter: Number(obj['diameter']),
+      color: getColorForFeature(obj['feature type']),
+      name: obj['feature name'],
       ...obj
     };
 
@@ -143,14 +118,14 @@ const MarsExplorer = () => {
         crs={CRS.EPSG4326}
         bounds={[[-90, -180], [90, 180]]}
         minZoom={1}
-        maxZoom={8}
+        maxZoom={7}
         worldCopyJump={true}
       >
         <TileLayer
           url="https://trek.nasa.gov/tiles/Mars/EQ/Mars_Viking_MDIM21_ClrMosaic_global_232m/1.0.0//default/default028mm/{z}/{y}/{x}.jpg"
           attribution="NASA/JPL/GSFC"
           tileSize={256}
-          noWrap={false}
+          noWrap={true}
         />
 
         <BoundingBoxes />
@@ -168,10 +143,10 @@ const MarsExplorer = () => {
             >
               <Popup>
                 <div style={{ minWidth: 120 }}>
-                  <strong>{f.name ?? f.feature ?? `Feature ${idx + 1}`}</strong>
-                  <div>Feature: {f.feature ?? '-'}</div>
+                  <strong>{f.name ?? `Feature ${idx + 1}`}</strong>
+                  <div>Feature type: {f.feature ?? '-'}</div>
                   <div>Lat: {f.lat}, Lon: {f.lon}</div>
-                  {f.radius !== undefined && <div>Radius: {f.radius}</div>}
+                  {f.diameter !== undefined && <div>Diameter: {f.diameter}</div>}
                 </div>
               </Popup>
             </CircleMarker>
