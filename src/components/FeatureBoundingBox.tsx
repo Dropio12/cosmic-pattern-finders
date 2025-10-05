@@ -221,6 +221,22 @@ export default function BoundingBoxes() {
         if (error) {
           console.error('Error verifying zone:', error);
         } else {
+          // Add 25 points to the user who created the zone
+          if (box.user_id) {
+            const { data: profile } = await supabase
+              .from('profiles')
+              .select('points')
+              .eq('id', box.user_id)
+              .single();
+            
+            if (profile) {
+              await supabase
+                .from('profiles')
+                .update({ points: profile.points + 25 })
+                .eq('id', box.user_id);
+            }
+          }
+          
           // Update local state
           setBoxes(boxes.map(b => b.id === box.id ? { ...b, verified: true } : b));
         }
