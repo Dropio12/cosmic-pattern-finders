@@ -5,7 +5,15 @@ import L from 'leaflet'
 import { supabase } from '@/integrations/supabase/client'
 import { useAuth } from '@/hooks/useAuth'
 import { Button } from '@/components/ui/button'
-import { Tag, X } from 'lucide-react'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Tag, X, Circle, Layers, Flame, Mountain } from 'lucide-react'
+
+const featureTypes = [
+  { value: "Impact Crater", label: "Impact Crater", icon: Circle },
+  { value: "Tectonic Pattern", label: "Tectonic Pattern", icon: Layers },
+  { value: "Volcanic Structure", label: "Volcanic Structure", icon: Flame },
+  { value: "Layered Deposit", label: "Layered Deposit", icon: Mountain },
+];
 
 type LatLng = { lat: number; lng: number }
 type Box = { id: number; bounds: [[number, number], [number, number]]; label: string; user_id: string | null; verified: boolean }
@@ -64,8 +72,9 @@ function MapEventsHandler({
   return null
 }
 
-export default function BoundingBoxes({ selectedFeature }: { selectedFeature: string | null }) {
+export default function BoundingBoxes() {
   const [drawing, setDrawing] = useState(false)
+  const [selectedFeature, setSelectedFeature] = useState<string>("")
   const [start, setStart] = useState<LatLng | null>(null)
   const [mousePos, setMousePos] = useState<LatLng | null>(null)
   const [boxes, setBoxes] = useState<Box[]>([])
@@ -169,8 +178,10 @@ export default function BoundingBoxes({ selectedFeature }: { selectedFeature: st
   };
 
   const handleMapClick = async (p: LatLng) => {
+    if (!drawing) return;
+    
     if (!selectedFeature) {
-      alert('Please select a feature type first!');
+      alert('Please select a feature type from the dropdown first!');
       return;
     }
     
@@ -199,6 +210,7 @@ export default function BoundingBoxes({ selectedFeature }: { selectedFeature: st
       setStart(null)
       setMousePos(null)
       setDrawing(false)
+      setSelectedFeature("")
     }
   }
 
@@ -293,38 +305,60 @@ export default function BoundingBoxes({ selectedFeature }: { selectedFeature: st
     setStart(null)
     setMousePos(null)
     setDrawing(false)
+    setSelectedFeature("")
   }
 
   return (
     <>
-      <div className="absolute top-6 right-6 z-[1000] flex gap-2">
-        <Button
-          onClick={() => {
-            if (!selectedFeature && !drawing) {
-              alert('Please select a feature type first!');
-              return;
-            }
-            setDrawing((d) => !d)
-            setStart(null)
-            setMousePos(null)
-          }}
-          variant={drawing ? "secondary" : "default"}
-          size="sm"
-          className="glass-card shadow-lg"
-          disabled={!selectedFeature && !drawing}
-        >
-          {drawing ? (
-            <>
-              <X className="w-4 h-4 mr-2" />
-              Cancel Drawing
-            </>
-          ) : (
-            <>
-              <Tag className="w-4 h-4 mr-2" />
-              Add Feature
-            </>
-          )}
-        </Button>
+      <div id="drawing-controls" className="absolute top-6 right-6 z-[1000] flex flex-col gap-2">
+        <div className="flex gap-2">
+          <Button
+            onClick={() => {
+              setDrawing((d) => !d)
+              if (drawing) {
+                setStart(null)
+                setMousePos(null)
+                setSelectedFeature("")
+              }
+            }}
+            variant={drawing ? "secondary" : "default"}
+            size="sm"
+            className="glass-card shadow-lg"
+          >
+            {drawing ? (
+              <>
+                <X className="w-4 h-4 mr-2" />
+                Cancel
+              </>
+            ) : (
+              <>
+                <Tag className="w-4 h-4 mr-2" />
+                Add Feature
+              </>
+            )}
+          </Button>
+        </div>
+        
+        {drawing && (
+          <Select value={selectedFeature} onValueChange={setSelectedFeature}>
+            <SelectTrigger className="glass-card shadow-lg border-primary/20">
+              <SelectValue placeholder="Select feature type..." />
+            </SelectTrigger>
+            <SelectContent className="z-[10000] bg-background border-border">
+              {featureTypes.map((feature) => {
+                const Icon = feature.icon;
+                return (
+                  <SelectItem key={feature.value} value={feature.value}>
+                    <div className="flex items-center gap-2">
+                      <Icon className="w-4 h-4" />
+                      <span>{feature.label}</span>
+                    </div>
+                  </SelectItem>
+                );
+              })}
+            </SelectContent>
+          </Select>
+        )}
       </div>
 
       {/* map events: click + mousemove for preview */}

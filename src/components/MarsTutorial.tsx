@@ -34,14 +34,14 @@ const steps: Step[] = [
     placement: 'bottom',
   },
   {
-    target: '#feature-selector',
+    target: '#drawing-controls',
     content: (
       <div className="space-y-3">
-        <h3 className="text-lg font-semibold">Feature Selector</h3>
-        <p>First, select the type of geological feature you want to label. Choose from Impact Craters, Tectonic Patterns, Volcanic Structures, or Layered Deposits.</p>
+        <h3 className="text-lg font-semibold">Drawing Controls</h3>
+        <p>Click "Add Feature" to start labeling. A dropdown will appear where you can select the type of geological feature you found!</p>
       </div>
     ),
-    placement: 'right',
+    placement: 'left',
   },
   {
     target: '#coordinates-panel',
@@ -135,10 +135,10 @@ const steps: Step[] = [
       <div className="space-y-3">
         <h3 className="text-lg font-semibold">How to Label Features</h3>
         <ol className="list-decimal pl-5 space-y-2 text-sm">
-          <li>Select a feature type from the left panel</li>
-          <li>Click "Add Feature" button on the top right</li>
-          <li>Click twice on the map to draw a bounding box around the feature</li>
-          <li>Your label will be saved automatically!</li>
+          <li>Click "Add Feature" button (top right)</li>
+          <li>Select a feature type from the dropdown</li>
+          <li>Click twice on the map to draw a box around the feature</li>
+          <li>Your label is saved automatically!</li>
         </ol>
       </div>
     ),
