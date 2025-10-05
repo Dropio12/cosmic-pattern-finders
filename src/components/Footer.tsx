@@ -8,8 +8,8 @@ export const Footer = () => {
           {/* Logo & Description */}
           <div className="md:col-span-2">
             <div className="flex items-center space-x-3 mb-4">
-              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-orange-500 to-orange-600"></div>
-              <span className="text-xl font-heading font-bold tracking-tight">Space Explorer</span>
+              <img src="/loupe.png" alt="Space Detector Logo" className="w-8 h-8 rounded-full object-cover" />
+              <span className="text-xl font-heading font-bold tracking-tight">Space Detector</span>
             </div>
             <p className="text-muted-foreground mb-6 leading-relaxed max-w-md">
               Democratizing space exploration through AI-powered citizen science. 
