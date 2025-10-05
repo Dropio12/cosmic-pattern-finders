@@ -120,7 +120,7 @@ export default function FeatureMarkers() {
           className="glass-card shadow-lg"
           style={{ marginRight: 8 }}
         >
-          {visible ? 'Hide Known Features' : 'Show Known Features'}
+          {visible ? 'Hide Features from IAU' : 'Show Features from IAU'}
         </Button>
       </div>
 

@@ -48,7 +48,7 @@ const DeepSpaceExplorer = () => {
         <MapContainer
           style={{ height: '100%', width: '100%' }}
           center={[0, 0]}
-          zoom={1}
+          zoom={2}
           minZoom={1}
           maxZoom={4}
           // worldCopyJump={true}
