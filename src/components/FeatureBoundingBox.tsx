@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button'
 import { Tag, X } from 'lucide-react'
 
 type LatLng = { lat: number; lng: number }
-type Box = { id: number; bounds: [[number, number], [number, number]]; label: string; user_id: string | null }
+type Box = { id: number; bounds: [[number, number], [number, number]]; label: string; user_id: string | null; verified: boolean }
 
 function escapeHtml(str: string) {
   return str
@@ -132,6 +132,7 @@ export default function BoundingBoxes() {
               bounds,
               label: zone.name,
               user_id: zone.user_id,
+              verified: zone.verified,
             };
           });
         setBoxes(loadedBoxes);
@@ -190,7 +191,8 @@ export default function BoundingBoxes() {
           id: savedZone.id, 
           bounds, 
           label, 
-          user_id: savedZone.user_id 
+          user_id: savedZone.user_id,
+          verified: savedZone.verified
         }
         setBoxes((s) => [...s, box])
       }
@@ -202,7 +204,27 @@ export default function BoundingBoxes() {
   }
 
   const handleZoneClick = async (box: Box) => {
-    if (!drawing && box.user_id === user?.id) {
+    if (drawing) return;
+
+    // Admins can verify unverified zones
+    if (isAdmin && !box.verified) {
+      const confirmed = window.confirm(`Verify zone "${box.label}"?`);
+      if (confirmed) {
+        const { error } = await supabase
+          .from('labels')
+          .update({ verified: true })
+          .eq('id', box.id);
+        
+        if (error) {
+          console.error('Error verifying zone:', error);
+        } else {
+          // Update local state
+          setBoxes(boxes.map(b => b.id === box.id ? { ...b, verified: true } : b));
+        }
+      }
+    }
+    // Users can delete their own zones
+    else if (box.user_id === user?.id) {
       const confirmed = window.confirm(`Delete zone "${box.label}"?`);
       if (confirmed) {
         // Delete from database
