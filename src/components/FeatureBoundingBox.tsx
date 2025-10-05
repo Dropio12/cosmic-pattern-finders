@@ -69,13 +69,12 @@ export default function BoundingBoxes() {
   const [boxes, setBoxes] = useState<Box[]>([])
   const { user } = useAuth()
 
-  // Load zones from database
+  // Load zones from database on mount
   useEffect(() => {
     const loadZones = async () => {
       const { data, error } = await supabase
         .from('labels')
-        .select('*')
-        .not('position->corner1', 'is', null);
+        .select('*');
 
       if (error) {
         console.error('Error loading zones:', error);
@@ -83,14 +82,23 @@ export default function BoundingBoxes() {
       }
 
       if (data) {
-        const loadedBoxes = data.map(zone => {
-          const pos = zone.position as any;
-          return {
-            id: zone.id,
-            bounds: makeBounds(pos.corner1, pos.corner2),
-            label: zone.name,
-          };
-        });
+        const loadedBoxes = data
+          .filter(zone => {
+            const pos = zone.position as any;
+            return pos && pos.corner1 && pos.corner2;
+          })
+          .map(zone => {
+            const pos = zone.position as any;
+            const bounds: [[number, number], [number, number]] = [
+              [pos.corner1.lat, pos.corner1.lng],
+              [pos.corner2.lat, pos.corner2.lng]
+            ];
+            return {
+              id: zone.id,
+              bounds,
+              label: zone.name,
+            };
+          });
         setBoxes(loadedBoxes);
       }
     };
