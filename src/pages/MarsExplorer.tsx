@@ -50,7 +50,7 @@ const MarsExplorer = () => {
           crs={CRS.EPSG4326}
           bounds={[[-90, -180], [90, 180]]}
           minZoom={1}
-          maxZoom={8}
+          maxZoom={7}
           worldCopyJump={true}
         >
           <TileLayer
