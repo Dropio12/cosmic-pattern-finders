@@ -6,6 +6,7 @@ import { supabase } from '@/integrations/supabase/client'
 import { useAuth } from '@/hooks/useAuth'
 import { Button } from '@/components/ui/button'
 import { Tag, X } from 'lucide-react'
+import FeatureSelectionDialog from './FeatureSelectionDialog'
 
 type LatLng = { lat: number; lng: number }
 type Box = { id: number; bounds: [[number, number], [number, number]]; label: string; user_id: string | null; verified: boolean }
@@ -64,13 +65,19 @@ function MapEventsHandler({
   return null
 }
 
-export default function BoundingBoxes() {
+export default function BoundingBoxes({ 
+  featureTypes 
+}: { 
+  featureTypes: Array<{ value: string; label: string }> 
+}) {
   const [drawing, setDrawing] = useState(false)
   const [start, setStart] = useState<LatLng | null>(null)
   const [mousePos, setMousePos] = useState<LatLng | null>(null)
   const [boxes, setBoxes] = useState<Box[]>([])
   const { user } = useAuth()
   const [isAdmin, setIsAdmin] = useState(false)
+  const [showFeatureDialog, setShowFeatureDialog] = useState(false)
+  const [pendingBounds, setPendingBounds] = useState<[[number, number], [number, number]] | null>(null)
 
   // Check if user has admin role (using secure user_roles table)
   useEffect(() => {
@@ -168,42 +175,44 @@ export default function BoundingBoxes() {
     return data;
   };
 
-  const handleMapClick = async (p: LatLng) => {
+  const handleMapClick = (p: LatLng) => {
     if (!start) {
       // first click: set start point
       setStart(p)
     } else {
-      // second click: finalize box, prompt for label
+      // second click: store bounds and open dialog
       const bounds = makeBounds(start, p)
-      const labelInput = window.prompt('Label for bounding box (max 100 characters):', '') || '';
-      
-      // Validate label input
-      const label = labelInput.trim().slice(0, 100);
-      if (!label) {
-        console.error('Label cannot be empty');
-        setDrawing(false);
-        setStart(null);
-        return;
-      }
-      
-      // Save to database first to get the real ID
-      const savedZone = await saveZoneToDb(bounds, label);
-      
-      if (savedZone) {
-        const box: Box = { 
-          id: savedZone.id, 
-          bounds, 
-          label, 
-          user_id: savedZone.user_id,
-          verified: savedZone.verified
-        }
-        setBoxes((s) => [...s, box])
-      }
-      
-      setStart(null)
-      setMousePos(null)
-      setDrawing(false)
+      setPendingBounds(bounds)
+      setShowFeatureDialog(true)
     }
+  }
+
+  const handleFeatureConfirm = async (featureType: string) => {
+    if (!pendingBounds) return
+
+    // Find the label from featureTypes
+    const featureLabel = featureTypes.find(f => f.value === featureType)?.label || featureType
+    
+    // Save to database first to get the real ID
+    const savedZone = await saveZoneToDb(pendingBounds, featureLabel)
+    
+    if (savedZone) {
+      const box: Box = { 
+        id: savedZone.id, 
+        bounds: pendingBounds, 
+        label: featureLabel, 
+        user_id: savedZone.user_id,
+        verified: savedZone.verified
+      }
+      setBoxes((s) => [...s, box])
+    }
+    
+    // Reset all states
+    setStart(null)
+    setMousePos(null)
+    setDrawing(false)
+    setPendingBounds(null)
+    setShowFeatureDialog(false)
   }
 
   const handleZoneClick = async (box: Box) => {
@@ -382,6 +391,13 @@ export default function BoundingBoxes() {
           </div>
         )
       })}
+
+      <FeatureSelectionDialog
+        open={showFeatureDialog}
+        onOpenChange={setShowFeatureDialog}
+        onConfirm={handleFeatureConfirm}
+        featureTypes={featureTypes}
+      />
     </>
   )
 }
