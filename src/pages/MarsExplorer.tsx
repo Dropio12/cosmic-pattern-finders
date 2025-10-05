@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { MapContainer, TileLayer } from 'react-leaflet';
 import { CRS } from 'leaflet';
 import CoordinatesPanel from '../components/CoordinatesPanel'
@@ -5,6 +6,7 @@ import BoundingBoxes from '../components/FeatureBoundingBox'
 import { Button } from '@/components/ui/button'
 import { ArrowLeft } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
+import { MarsTutorial, TutorialButton } from '@/components/MarsTutorial'
 
 
 
@@ -23,6 +25,7 @@ const marsPatterns = [
 
 const MarsExplorer = () => {
   const navigate = useNavigate();
+  const [showTutorial, setShowTutorial] = useState(false);
 
   return (
     <div className="w-full h-screen relative">
@@ -36,6 +39,9 @@ const MarsExplorer = () => {
         <ArrowLeft className="w-4 h-4 mr-2" />
         Back to Explore
       </Button>
+
+      <TutorialButton onClick={() => setShowTutorial(true)} />
+      <MarsTutorial open={showTutorial} onOpenChange={setShowTutorial} />
 
       <MapContainer
         style={{ height: '100%', width: '100%' }}
