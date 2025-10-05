@@ -76,7 +76,7 @@ export default function BoundingBoxes() {
       // second click: finalize box, prompt for label
       const bounds = makeBounds(start, p)
       const labelInput = window.prompt('Label for bounding box (max 100 characters):', '') || '';
-      
+
       // Validate label input
       const label = labelInput.trim().slice(0, 100);
       if (!label) {
@@ -85,13 +85,7 @@ export default function BoundingBoxes() {
         setStart(null);
         return;
       }
-    
-      const box = { 
-        bounds, 
-        label, 
-      }
-      setBoxes((s) => [...s, box])
-      
+
       setStart(null)
       setMousePos(null)
       setDrawing(false)
@@ -166,8 +160,8 @@ export default function BoundingBoxes() {
         })
         return (
           <div key={b.id}>
-            <Rectangle 
-              bounds={b.bounds} 
+            <Rectangle
+              bounds={b.bounds}
               pathOptions={{ color: 'red' }}
             />
             <Marker
