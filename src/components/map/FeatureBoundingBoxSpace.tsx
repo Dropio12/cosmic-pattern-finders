@@ -8,6 +8,14 @@ import { Tag, X } from 'lucide-react'
 type LatLng = { lat: number; lng: number }
 type Box = { id: number; bounds: [[number, number], [number, number]]; label: string; user_id: string | null; verified: boolean }
 
+// custom icon for the first-click marker (preview start)
+const startClickIcon = L.divIcon({
+  className: 'start-click-icon',
+  html: `<div class="start-click-dot"></div>`,
+  iconSize: [18, 18],
+  iconAnchor: [0, 0],
+})
+
 function escapeHtml(str: string) {
   return str
     .replace(/&/g, '&amp;')
@@ -149,8 +157,8 @@ export default function BoundingBoxes() {
       <MapEventsHandler enabled={drawing} start={start} onMapClick={handleMapClick} onMouseMove={setMousePos} />
 
       {/* show an interim marker for first click */}
-      {start && <Marker position={[start.lat, start.lng]} />}
-
+      {start && <Marker position={[start.lat, start.lng]} icon={startClickIcon} />} 
+      
       {/* preview rectangle while moving mouse after first click */}
       {start && mousePos && (
         <Rectangle bounds={makeBounds(start, mousePos)} pathOptions={{ color: 'blue', dashArray: '6' }} />

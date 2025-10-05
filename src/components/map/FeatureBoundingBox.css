@@ -45,3 +45,26 @@ button {
   box-shadow: 0 1px 5px rgba(0,0,0,0.4)!important;
   padding: 5px 10px!important;
 }
+
+/* nicer first-click marker (small filled dot with halo) */
+.start-click-icon {
+  pointer-events: none; /* avoid interfering with map interactions */
+}
+.start-click-icon .start-click-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #f00;
+  box-shadow: 0 0 0 5px rgba(30,144,255,0.18); /* halo */
+  border: 2px solid white;
+  transform: translate(-50%, -50%);
+  position: relative;
+}
+
+/* ensure the divIcon doesn't get unwanted default styles */
+.leaflet-marker-icon.start-click-icon {
+  background: transparent;
+  border: none;
+  width: 18px;
+  height: 18px;
+}

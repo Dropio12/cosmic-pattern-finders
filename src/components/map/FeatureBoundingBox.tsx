@@ -33,6 +33,14 @@ function centerOfBounds(bounds: [[number, number], [number, number]]): [number, 
   return [lat, lng]
 }
 
+// custom icon for the first-click marker (preview start)
+const startClickIcon = L.divIcon({
+  className: 'start-click-icon',
+  html: `<div class="start-click-dot"></div>`,
+  iconSize: [18, 18],
+  iconAnchor: [9, 9],
+})
+
 function MapEventsHandler({
   enabled,
   start,
@@ -341,7 +349,7 @@ export default function BoundingBoxes() {
       <MapEventsHandler enabled={drawing} start={start} onMapClick={handleMapClick} onMouseMove={setMousePos} />
 
       {/* show an interim marker for first click */}
-      {start && <Marker position={[start.lat, start.lng]} />}
+      {start && <Marker position={[start.lat, start.lng]} icon={startClickIcon} />} 
 
       {/* preview rectangle while moving mouse after first click */}
       {start && mousePos && (
