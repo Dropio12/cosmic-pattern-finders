@@ -1,20 +1,20 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
-import heroMars from "@/assets/hero-mars.jpg";
+import spaceNebula from "@/assets/space-nebula.jpg";
 export const Hero = () => {
   return <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
       {/* Background Layers */}
       <div className="absolute inset-0 z-0 bg-background"></div>
       
       {/* Hero Image */}
-      <div className="absolute inset-0 z-[1] opacity-30">
-        <img src={heroMars} alt="Mars surface with distant mountains" className="w-full h-full object-cover mix-blend-luminosity" />
+      <div className="absolute inset-0 z-[1] opacity-40">
+        <img src={spaceNebula} alt="Cosmic nebula with stars in deep space" className="w-full h-full object-cover mix-blend-luminosity" />
       </div>
       
       {/* Gradient Glow */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[600px] z-[2]" style={{
-        background: 'radial-gradient(circle at 50% 0%, hsl(25 95% 53% / 0.15) 0%, transparent 50%)'
+        background: 'radial-gradient(circle at 50% 0%, hsl(260 70% 60% / 0.15) 0%, transparent 50%)'
       }}></div>
 
       {/* Grid Pattern */}
@@ -89,11 +89,11 @@ export const Hero = () => {
 
       {/* Floating orbs */}
       <div className="absolute bottom-20 left-20 w-32 h-32 rounded-full z-[5] hidden lg:block animate-float" style={{
-        background: 'radial-gradient(circle, hsl(25 95% 53% / 0.2) 0%, transparent 70%)',
+        background: 'radial-gradient(circle, hsl(260 70% 60% / 0.2) 0%, transparent 70%)',
         filter: 'blur(40px)'
       }}></div>
       <div className="absolute top-40 right-20 w-40 h-40 rounded-full z-[5] hidden lg:block animate-float" style={{
-        background: 'radial-gradient(circle, hsl(142 71% 45% / 0.2) 0%, transparent 70%)',
+        background: 'radial-gradient(circle, hsl(180 80% 55% / 0.2) 0%, transparent 70%)',
         filter: 'blur(40px)',
         animationDelay: '2s'
       }}></div>
