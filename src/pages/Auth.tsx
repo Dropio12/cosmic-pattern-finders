@@ -19,9 +19,18 @@ const Auth = () => {
   const [password, setPassword] = useState("");
   const [isResearcher, setIsResearcher] = useState("no");
   const [loading, setLoading] = useState(false);
+  const [activeTab, setActiveTab] = useState("signin");
   const navigate = useNavigate();
   const location = useLocation();
   const { toast } = useToast();
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const tab = params.get("tab");
+    if (tab === "signup") {
+      setActiveTab("signup");
+    }
+  }, [location]);
 
   useEffect(() => {
     const checkUser = async () => {
@@ -175,7 +184,7 @@ const Auth = () => {
           </p>
         </div>
 
-        <Tabs defaultValue="signin" className="w-full">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="grid w-full grid-cols-2 mb-6">
             <TabsTrigger value="signin">Sign In</TabsTrigger>
             <TabsTrigger value="signup">Sign Up</TabsTrigger>
@@ -209,7 +218,7 @@ const Auth = () => {
               </div>
               <Button 
                 type="submit" 
-                className="w-full" 
+                className="w-full bg-primary text-primary-foreground hover:bg-primary/90 shadow-none" 
                 size="lg"
                 disabled={loading}
               >
@@ -267,7 +276,7 @@ const Auth = () => {
               </div>
               <Button 
                 type="submit" 
-                className="w-full" 
+                className="w-full bg-primary text-primary-foreground hover:bg-primary/90 shadow-none" 
                 size="lg"
                 disabled={loading}
               >

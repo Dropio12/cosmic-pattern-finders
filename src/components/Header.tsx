@@ -56,7 +56,7 @@ export const Header = () => {
                   <Link to="/auth">Sign In</Link>
                 </Button>
                 <Button variant="default" size="sm" asChild>
-                  <Link to="/explore">Get Started</Link>
+                  <Link to="/auth?tab=signup">Get Started</Link>
                 </Button>
               </>
             )}
@@ -119,7 +119,7 @@ export const Header = () => {
                     <Link to="/auth">Sign In</Link>
                   </Button>
                   <Button variant="default" className="w-full" asChild>
-                    <Link to="/explore">Get Started</Link>
+                    <Link to="/auth?tab=signup">Get Started</Link>
                   </Button>
                 </>
               )}
