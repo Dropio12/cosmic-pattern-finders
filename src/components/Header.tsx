@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Menu, X, LogOut } from "lucide-react";
+import { Menu, X, LogOut, HelpCircle } from "lucide-react";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
@@ -19,7 +19,9 @@ export const Header = () => {
       <nav className="container mx-auto px-6 py-5">
         <div className="flex items-center justify-between">
           <Link to="/" className="flex items-center space-x-3">
-            <img src="/loupe.png" alt="Space Detector Logo" className="w-8 h-8 rounded-full object-cover" />
+            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-cyan-500 to-cyan-600 flex items-center justify-center">
+              <HelpCircle className="w-5 h-5 text-white" />
+            </div>
             <span className="text-xl font-heading font-bold tracking-tight">Space Explorer</span>
           </Link>
 
