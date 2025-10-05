@@ -2,6 +2,9 @@ import { MapContainer, TileLayer } from 'react-leaflet';
 import { CRS } from 'leaflet';
 import CoordinatesPanel from '../components/CoordinatesPanel'
 import BoundingBoxes from '../components/FeatureBoundingBox'
+import { Button } from '@/components/ui/button'
+import { ArrowLeft } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
 
 
 
@@ -19,8 +22,21 @@ const marsPatterns = [
 ];
 
 const MarsExplorer = () => {
+  const navigate = useNavigate();
+
   return (
-    <div className="w-full h-screen">
+    <div className="w-full h-screen relative">
+      {/* Back Button */}
+      <Button
+        onClick={() => navigate('/explore')}
+        variant="secondary"
+        size="sm"
+        className="absolute top-4 left-4 z-[1000] glass-card shadow-lg"
+      >
+        <ArrowLeft className="w-4 h-4 mr-2" />
+        Back to Explore
+      </Button>
+
       <MapContainer
         style={{ height: '100%', width: '100%' }}
         center={[0, 0]}
