@@ -1,13 +1,13 @@
 import { useState } from 'react';
 import { MapContainer, TileLayer } from 'react-leaflet';
 import { CRS } from 'leaflet';
-import CoordinatesPanel from '../components/map/CoordinatesPanel'
-import BoundingBoxes from '../components/map/FeatureBoundingBox'
+import CoordinatesPanel from '@/components/map/CoordinatesPanel'
+import BoundingBoxes from '@/components/map/FeatureBoundingBox'
 import { Button } from '@/components/ui/button'
 import { ArrowLeft } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { MarsTutorial, TutorialButton } from '@/components/MarsTutorial'
-import FeatureMarkers from '../components/map/FeatureMarkers'
+import FeatureMarkers from '@/components/map/FeatureMarkers'
 
 const marsPatterns = [
   { value: "crater", label: "Impact Crater" },
@@ -66,6 +66,7 @@ const MarsExplorer = () => {
           <FeatureMarkers />
         </MapContainer>
       </div>
+    </div>
   );
 };
 
