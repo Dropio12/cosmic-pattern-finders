@@ -1,8 +1,9 @@
 import './FeatureBoundingBox.css'
 import { useState, useEffect } from 'react'
-import { Marker, Rectangle, useMapEvents } from 'react-leaflet'
+import { Marker, Rectangle, useMapEvents, useMap } from 'react-leaflet'
 import L from 'leaflet'
 import { supabase } from '@/integrations/supabase/client'
+import 'leaflet.heat'
 import { useAuth } from '@/hooks/useAuth'
 import { Button } from '@/components/ui/button'
 import { Tag, X } from 'lucide-react'
@@ -64,6 +65,28 @@ function MapEventsHandler({
   return null
 }
 
+function HeatmapOverlay({ points, visible }: { points: [number, number][]; visible: boolean }) {
+  const map = useMap();
+  useEffect(() => {
+    let layer: any | null = null;
+    if (visible && points.length > 0 && (L as any).heatLayer) {
+      const heatPoints = points.map(([lat, lng]) => [lat, lng, 1]);
+      layer = (L as any).heatLayer(heatPoints, {
+        radius: 25,
+        blur: 15,
+        maxZoom: 12,
+        gradient: { 0.0: 'blue', 0.5: 'lime', 1.0: 'red' },
+      }).addTo(map);
+    }
+    return () => {
+      if (layer) {
+        map.removeLayer(layer);
+      }
+    };
+  }, [points, visible, map]);
+  return null;
+}
+
 export default function BoundingBoxes() {
   const [drawing, setDrawing] = useState(false)
   const [start, setStart] = useState<LatLng | null>(null)
@@ -96,6 +119,9 @@ export default function BoundingBoxes() {
   // Load zones from database on mount
   useEffect(() => {
     const loadZones = async () => {
+      // Clear previous data to avoid stale display when auth status changes
+      setBoxes([]);
+
       let query = supabase.from('labels').select('*');
 
       if (isAdmin) {
@@ -293,13 +319,14 @@ export default function BoundingBoxes() {
       {/* show an interim marker for first click */}
       {start && <Marker position={[start.lat, start.lng]} />}
 
-      {/* preview rectangle while moving mouse after first click */}
-      {start && mousePos && (
-        <Rectangle bounds={makeBounds(start, mousePos)} pathOptions={{ color: 'blue', dashArray: '6' }} />
+      {/* heatmap for anonymous users */}
+      {!user && (
+        <HeatmapOverlay
+          points={boxes.map((b) => centerOfBounds(b.bounds))}
+          visible={!user}
+        />
       )}
-
-      {/* render saved boxes */}
-      {boxes.map((b) => {
+      {user && boxes.map((b) => {
         const center = centerOfBounds(b.bounds)
         const canDelete = b.user_id === user?.id
         // divIcon for label (styled via CSS). sanitize label.
