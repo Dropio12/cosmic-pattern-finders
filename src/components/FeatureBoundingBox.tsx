@@ -209,10 +209,14 @@ export default function BoundingBoxes() {
   const handleZoneClick = async (box: Box) => {
     if (drawing) return;
 
-    // Admins can verify unverified zones
-    if (isAdmin && !box.verified) {
-      const confirmed = window.confirm(`Verify zone "${box.label}"?`);
-      if (confirmed) {
+    // Admins have two options: verify or delete
+    if (isAdmin) {
+      const action = !box.verified 
+        ? window.confirm(`Verify zone "${box.label}"? (Cancel to delete instead)`)
+        : window.confirm(`Delete zone "${box.label}"?`);
+      
+      if (action && !box.verified) {
+        // Verify the zone
         const { error } = await supabase
           .from('labels')
           .update({ verified: true })
@@ -239,6 +243,33 @@ export default function BoundingBoxes() {
           
           // Update local state
           setBoxes(boxes.map(b => b.id === box.id ? { ...b, verified: true } : b));
+        }
+      } else if (action && box.verified) {
+        // Delete verified zone
+        const { error } = await supabase
+          .from('labels')
+          .delete()
+          .eq('id', box.id);
+        
+        if (error) {
+          console.error('Error deleting zone:', error);
+        } else {
+          setBoxes(boxes.filter(b => b.id !== box.id));
+        }
+      } else if (!action && !box.verified) {
+        // Cancel on verify dialog means delete
+        const confirmDelete = window.confirm(`Are you sure you want to delete zone "${box.label}"?`);
+        if (confirmDelete) {
+          const { error } = await supabase
+            .from('labels')
+            .delete()
+            .eq('id', box.id);
+          
+          if (error) {
+            console.error('Error deleting zone:', error);
+          } else {
+            setBoxes(boxes.filter(b => b.id !== box.id));
+          }
         }
       }
     }
