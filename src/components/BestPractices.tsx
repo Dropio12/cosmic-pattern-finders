@@ -60,7 +60,7 @@ export const BestPractices = () => {
           </h2>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
             Follow these guidelines to maximize the scientific value of your contributions 
-            and become a trusted member of the Space Detector community.
+            and become a trusted member of the Space Detective community.
           </p>
         </div>
 

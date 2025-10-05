@@ -19,8 +19,8 @@ export const Header = () => {
       <nav className="container mx-auto px-6 py-5">
         <div className="flex items-center justify-between">
           <Link to="/" className="flex items-center space-x-3">
-            <img src="/loupe.png" alt="Space Detector Logo" className="w-8 h-8 rounded-full object-cover" />
-            <span className="text-xl font-heading font-bold tracking-tight">Space Explorer</span>
+            <img src="/loupe.png" alt="Space Detective Logo" className="w-8 h-8 rounded-full object-cover" />
+            <span className="text-xl font-heading font-bold tracking-tight">Space Detective</span>
           </Link>
 
           {/* Desktop Navigation */}
