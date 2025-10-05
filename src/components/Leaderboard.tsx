@@ -1,13 +1,9 @@
-import { Trophy, Target, CheckCircle, Zap, Tag } from "lucide-react";
+import { Trophy, Target, CheckCircle, Tag } from "lucide-react";
 import communityBg from "@/assets/community-impact-bg.jpg";
+import { supabase } from "@/integrations/supabase/client";
+import { useEffect, useState } from "react";
 
-const topContributors = [
-  { rank: 1, name: "SpaceExplorer42", points: 15240, avatar: "🚀" },
-  { rank: 2, name: "MarsMapper", points: 12890, avatar: "🔭" },
-  { rank: 3, name: "CosmicScout", points: 11560, avatar: "🌟" },
-  { rank: 4, name: "PlanetHunter", points: 10234, avatar: "🌍" },
-  { rank: 5, name: "StarGazer", points: 9876, avatar: "⭐" }
-];
+const avatars = ["🚀", "🔭", "🌟", "🌍", "⭐", "🛸", "🌌", "🪐", "☄️", "🌠"];
 
 const stats = [
   { icon: Tag, label: "Patterns Tagged", value: "24,567", color: "text-accent" },
@@ -15,7 +11,45 @@ const stats = [
   { icon: Target, label: "Sent to NASA", value: "12,891", color: "text-primary" }
 ];
 
+interface Contributor {
+  rank: number;
+  name: string;
+  points: number;
+  avatar: string;
+}
+
 export const Leaderboard = () => {
+  const [topContributors, setTopContributors] = useState<Contributor[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchLeaderboard = async () => {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('passport, points')
+        .order('points', { ascending: false })
+        .limit(10);
+
+      if (error) {
+        console.error('Error fetching leaderboard:', error);
+        setLoading(false);
+        return;
+      }
+
+      if (data) {
+        const contributors = data.map((profile, index) => ({
+          rank: index + 1,
+          name: profile.passport,
+          points: profile.points,
+          avatar: avatars[index % avatars.length]
+        }));
+        setTopContributors(contributors);
+      }
+      setLoading(false);
+    };
+
+    fetchLeaderboard();
+  }, []);
   return (
     <section id="leaderboard" className="py-32 relative overflow-hidden">
       {/* Background Image */}
@@ -69,7 +103,12 @@ export const Leaderboard = () => {
               <h3 className="text-2xl font-heading font-bold">Top Contributors</h3>
             </div>
             <div className="space-y-1">
-              {topContributors.map((contributor, index) => (
+              {loading ? (
+                <div className="text-center py-8 text-muted-foreground">Loading leaderboard...</div>
+              ) : topContributors.length === 0 ? (
+                <div className="text-center py-8 text-muted-foreground">No contributors yet</div>
+              ) : (
+                topContributors.map((contributor, index) => (
                 <div
                   key={contributor.rank}
                   className={`flex items-center justify-between p-5 rounded-xl transition-all ${
@@ -95,7 +134,8 @@ export const Leaderboard = () => {
                     </div>
                   </div>
                 </div>
-              ))}
+              ))
+              )}
             </div>
           </div>
         </div>
