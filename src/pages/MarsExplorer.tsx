@@ -1,9 +1,9 @@
 import Papa from 'papaparse';
 import { MapContainer, Marker, TileLayer, CircleMarker, Popup } from 'react-leaflet';
 import { CRS } from 'leaflet';
-import React, { useEffect, useState } from 'react';
-import CoordinatesPanel from '../components/CoordinatesPanel'
-import BoundingBoxes from '../components/FeatureBoundingBox'
+import { useEffect, useState } from 'react';
+import CoordinatesPanel from '../components/map/CoordinatesPanel'
+import BoundingBoxes from '../components/map/FeatureBoundingBox'
 
 const marsPatterns = [
   { value: "crater", label: "Impact Crater" },
