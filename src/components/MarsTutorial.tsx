@@ -1,6 +1,10 @@
 import Joyride, { Step, CallBackProps, STATUS } from 'react-joyride';
 import { Button } from '@/components/ui/button';
 import { HelpCircle } from 'lucide-react';
+import craterExample from '@/assets/crater-example.png';
+import tectonicExample from '@/assets/tectonic-example.png';
+import volcanoExample from '@/assets/volcano-example.png';
+import depositExample from '@/assets/deposit-example.png';
 
 interface MarsTutorialProps {
   run: boolean;
@@ -55,12 +59,36 @@ const steps: Step[] = [
       <div className="space-y-3">
         <h3 className="text-lg font-semibold">Identifying Features</h3>
         <p>Look for distinctive geological formations:</p>
-        <ul className="list-disc pl-5 space-y-1">
-          <li><strong>Impact Craters:</strong> Circular depressions with raised rims</li>
-          <li><strong>Tectonic Patterns:</strong> Linear features showing crustal movement</li>
-          <li><strong>Volcanic Structures:</strong> Dome-shaped formations</li>
-          <li><strong>Layered Deposits:</strong> Visible stratification</li>
-        </ul>
+        <div className="space-y-3 mt-4">
+          <div className="flex gap-3 items-start">
+            <img src={craterExample} alt="Impact Crater" className="w-20 h-20 object-cover rounded-lg" />
+            <div>
+              <strong>Impact Craters:</strong>
+              <p className="text-sm">Circular depressions with raised rims</p>
+            </div>
+          </div>
+          <div className="flex gap-3 items-start">
+            <img src={tectonicExample} alt="Tectonic Pattern" className="w-20 h-20 object-cover rounded-lg" />
+            <div>
+              <strong>Tectonic Patterns:</strong>
+              <p className="text-sm">Linear features showing crustal movement</p>
+            </div>
+          </div>
+          <div className="flex gap-3 items-start">
+            <img src={volcanoExample} alt="Volcanic Structure" className="w-20 h-20 object-cover rounded-lg" />
+            <div>
+              <strong>Volcanic Structures:</strong>
+              <p className="text-sm">Dome-shaped formations</p>
+            </div>
+          </div>
+          <div className="flex gap-3 items-start">
+            <img src={depositExample} alt="Layered Deposit" className="w-20 h-20 object-cover rounded-lg" />
+            <div>
+              <strong>Layered Deposits:</strong>
+              <p className="text-sm">Visible stratification</p>
+            </div>
+          </div>
+        </div>
       </div>
     ),
     placement: 'center',
