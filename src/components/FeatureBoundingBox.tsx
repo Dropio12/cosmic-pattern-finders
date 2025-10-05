@@ -72,7 +72,7 @@ export default function BoundingBoxes() {
   const { user } = useAuth()
   const [isAdmin, setIsAdmin] = useState(false)
 
-  // Check if user is admin
+  // Check if user has admin role (using secure user_roles table)
   useEffect(() => {
     const checkAdmin = async () => {
       if (!user) {
@@ -81,12 +81,13 @@ export default function BoundingBoxes() {
       }
 
       const { data } = await supabase
-        .from('profiles')
-        .select('is_admin')
-        .eq('id', user.id)
-        .single();
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', user.id)
+        .eq('role', 'admin')
+        .maybeSingle();
 
-      setIsAdmin(data?.is_admin || false);
+      setIsAdmin(!!data);
     };
 
     checkAdmin();
@@ -98,13 +99,12 @@ export default function BoundingBoxes() {
       let query = supabase.from('labels').select('*');
 
       if (isAdmin) {
-        // Admins see ALL zones
-        // No filter needed
+        // Admins see ALL zones (no filter needed)
       } else if (user) {
-        // Logged-in users see: verified zones + their own non-verified zones
+        // Logged-in users see: verified zones OR their own non-verified zones
         query = query.or(`verified.eq.true,user_id.eq.${user.id}`);
       } else {
-        // Non-logged-in users see only verified zones
+        // Anonymous users see only verified zones
         query = query.eq('verified', true);
       }
 
@@ -170,7 +170,16 @@ export default function BoundingBoxes() {
     } else {
       // second click: finalize box, prompt for label
       const bounds = makeBounds(start, p)
-      const label = window.prompt('Label for bounding box:', '') || ''
+      const labelInput = window.prompt('Label for bounding box (max 100 characters):', '') || '';
+      
+      // Validate label input
+      const label = labelInput.trim().slice(0, 100);
+      if (!label) {
+        console.error('Label cannot be empty');
+        setDrawing(false);
+        setStart(null);
+        return;
+      }
       
       // Save to database first to get the real ID
       const savedZone = await saveZoneToDb(bounds, label);
