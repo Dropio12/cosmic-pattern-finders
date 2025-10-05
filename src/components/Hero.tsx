@@ -23,7 +23,7 @@ export const Hero = () => {
       {/* Content */}
       <div className="relative z-[10] container mx-auto px-6 text-center">
         <div className="max-w-5xl mx-auto space-y-8 animate-fade-in">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-card border border-primary/20 mb-4">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-card border border-primary/20 mb-12">
             <div className="w-2 h-2 rounded-full bg-success animate-pulse"></div>
             <span className="text-sm text-muted-foreground">Community-Driven Planetary Discovery • Live</span>
           </div>
@@ -45,11 +45,6 @@ export const Hero = () => {
               <Button variant="default" size="lg" className="group">
                 Start Exploring
                 <ArrowRight className="group-hover:translate-x-1 transition-transform" />
-              </Button>
-            </Link>
-            <Link to="/guide">
-              <Button variant="outline" size="lg">
-                Watch Demo
               </Button>
             </Link>
           </div>
