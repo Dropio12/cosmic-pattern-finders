@@ -111,17 +111,22 @@ export default function BoundingBoxes() {
     const corner1 = { lat: bounds[0][0], lng: bounds[0][1] };
     const corner2 = { lat: bounds[1][0], lng: bounds[1][1] };
 
-    const { error } = await supabase
+    const { data, error } = await supabase
       .from('labels')
       .insert({
         name: label,
         user_id: user?.id || null,
         position: { corner1, corner2 },
-      });
+      })
+      .select()
+      .single();
 
     if (error) {
       console.error('Error saving zone:', error);
+      return null;
     }
+    
+    return data;
   };
 
   const handleMapClick = async (p: LatLng) => {
@@ -132,11 +137,19 @@ export default function BoundingBoxes() {
       // second click: finalize box, prompt for label
       const bounds = makeBounds(start, p)
       const label = window.prompt('Label for bounding box:', '') || ''
-      const box: Box = { id: Date.now(), bounds, label, user_id: user?.id || null }
-      setBoxes((s) => [...s, box])
       
-      // Save to database
-      await saveZoneToDb(bounds, label);
+      // Save to database first to get the real ID
+      const savedZone = await saveZoneToDb(bounds, label);
+      
+      if (savedZone) {
+        const box: Box = { 
+          id: savedZone.id, 
+          bounds, 
+          label, 
+          user_id: savedZone.user_id 
+        }
+        setBoxes((s) => [...s, box])
+      }
       
       setStart(null)
       setMousePos(null)
