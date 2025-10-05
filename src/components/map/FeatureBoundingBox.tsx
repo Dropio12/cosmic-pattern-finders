@@ -38,7 +38,7 @@ const startClickIcon = L.divIcon({
   className: 'start-click-icon',
   html: `<div class="start-click-dot"></div>`,
   iconSize: [18, 18],
-  iconAnchor: [9, 9],
+  iconAnchor: [0, 0],
 })
 
 function MapEventsHandler({
