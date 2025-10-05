@@ -12,14 +12,9 @@ import FeatureMarkers from '@/components/map/FeatureMarkers'
 const marsPatterns = [
   { value: "crater", label: "Impact Crater" },
   { value: "tectonic", label: "Tectonic Pattern" },
-  { value: "graben", label: "Graben/Fault" },
-  { value: "wrinkle-ridge", label: "Wrinkle Ridge" },
-  { value: "polar-ice", label: "Polar Ice Cap" },
+  { value: "volcano", label: "Volcanic Structure" },
   { value: "layered-deposit", label: "Layered Deposit" },
-  { value: "landslide", label: "Landslide/Mass Wasting" },
-  { value: "erosion", label: "Erosion Pattern" },
-  { value: "gully", label: "Gully Formation" },
-  { value: "recurring-slope", label: "Recurring Slope Lineae (RSL)" },
+  { value: "fluvial-channel", label: "Fluvial Channel" },
 ];
 
 const MarsExplorer = () => {
@@ -59,7 +54,7 @@ const MarsExplorer = () => {
             noWrap={true}
           />
 
-          <BoundingBoxes />
+          <BoundingBoxes featureTypes={marsPatterns} />
           <CoordinatesPanel />
 
           <FeatureMarkers />

@@ -2,7 +2,8 @@ import Papa from 'papaparse';
 import { CircleMarker, Popup } from 'react-leaflet';
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button'
-import { Tag, X } from 'lucide-react'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { HelpCircle } from 'lucide-react'
 
 type FeatureRow = {
   lat: number;
@@ -113,15 +114,30 @@ export default function FeatureMarkers() {
   return (
     <>
       <div style={{ position: 'absolute', zIndex: 1000, right: 10, top: 60 }}>
-        <Button
-          onClick={() => setVisible(v => !v)}
-          variant={visible ? 'secondary' : 'default'}
-          size="sm"
-          className="glass-card shadow-lg"
-          style={{ marginRight: 8 }}
-        >
-          {visible ? 'Hide Features from IAU' : 'Show Features from IAU'}
-        </Button>
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button
+              variant="secondary"
+              size="sm"
+              className="glass-card shadow-lg w-10 h-10 p-0"
+            >
+              <HelpCircle className="w-4 h-4" />
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-64" align="end">
+            <div className="space-y-2">
+              <h4 className="font-medium text-sm">Map Options</h4>
+              <Button
+                onClick={() => setVisible(v => !v)}
+                variant={visible ? 'secondary' : 'default'}
+                size="sm"
+                className="w-full"
+              >
+                {visible ? 'Hide Features from IAU' : 'Show Features from IAU'}
+              </Button>
+            </div>
+          </PopoverContent>
+        </Popover>
       </div>
 
       {visible && loading && (
