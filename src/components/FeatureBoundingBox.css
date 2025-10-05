@@ -1,0 +1,23 @@
+/* visual label */
+.custom-bbox-icon .bbox-label {
+  width: max-content;
+  transform: translate(-50%, -50%);
+  font-size: 24px;
+  color: #CCC;
+  font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  pointer-events: none;
+}
+
+/* ensure label does not get clipped by any leaflet defaults */
+.leaflet-marker-icon.custom-bbox-icon {
+  overflow: visible;
+}
+
+
+button {
+  background-color: #fff;
+  color: #000;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-shadow: 0 1px 5px rgba(0,0,0,0.4);
+}

@@ -1,0 +1,13 @@
+.coords-panel {
+  position: fixed;
+  bottom: 12px;
+  left: 12px;
+  background: rgba(0, 0, 0, 0.75);
+  color: #fff;
+  padding: 6px 10px;
+  border-radius: 4px;
+  font-family: monospace;
+  font-size: 13px;
+  z-index: 1000;
+  pointer-events: none;
+}
