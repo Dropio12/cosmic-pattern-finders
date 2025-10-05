@@ -33,7 +33,7 @@ const MarsExplorer = () => {
         onClick={() => navigate('/explore')}
         variant="secondary"
         size="sm"
-        className="absolute top-4 left-4 z-[1000] glass-card shadow-lg"
+        className="fixed bottom-24 left-4 z-[1000] glass-card shadow-lg"
       >
         <ArrowLeft className="w-4 h-4 mr-2" />
         Back to Explore
@@ -44,7 +44,7 @@ const MarsExplorer = () => {
 
       <div id="mars-map" className="w-full h-full">
         <MapContainer
-          style={{ height: '90vh', width: '100vw' }}
+          style={{ height: '100%', width: '100%' }}
           center={[0, 0]}
           zoom={2}
           crs={CRS.EPSG4326}
@@ -57,7 +57,7 @@ const MarsExplorer = () => {
             url="https://trek.nasa.gov/tiles/Mars/EQ/Mars_Viking_MDIM21_ClrMosaic_global_232m/1.0.0//default/default028mm/{z}/{y}/{x}.jpg"
             attribution="NASA/JPL/GSFC"
             tileSize={256}
-            noWrap={false}
+            noWrap={true}
           />
 
           <BoundingBoxes />

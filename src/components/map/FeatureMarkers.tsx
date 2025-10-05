@@ -1,6 +1,8 @@
 import Papa from 'papaparse';
 import { CircleMarker, Popup } from 'react-leaflet';
 import { useEffect, useState } from 'react';
+import { Button } from '@/components/ui/button'
+import { Tag, X } from 'lucide-react'
 
 type FeatureRow = {
   lat: number;
@@ -70,6 +72,16 @@ export default function FeatureMarkers() {
   const [features, setFeatures] = useState<FeatureRow[]>([]);
   const [loading, setLoading] = useState(false);
 
+  // new/modified state for UI behavior (add these near other state declarations)
+  const [addingMarker, setAddingMarker] = useState(false)
+  const [markerStart, setMarkerStart] = useState<any | null>(null)
+
+  // optional cancel helper (call where appropriate)
+  const cancelAdding = () => {
+    setMarkerStart(null)
+    setAddingMarker(false)
+  }
+
   // Load CSV lazily when user enables markers
   useEffect(() => {
     let mounted = true;
@@ -100,24 +112,24 @@ export default function FeatureMarkers() {
 
   return (
     <>
-      {/* control button positioned under the Add Feature control */}
       <div style={{ position: 'absolute', zIndex: 1000, right: 10, top: 60 }}>
-        <button
+        <Button
           onClick={() => setVisible(v => !v)}
+          variant={visible ? 'secondary' : 'default'}
+          size="sm"
+          className="glass-card shadow-lg"
           style={{ marginRight: 8 }}
         >
           {visible ? 'Hide Known Features' : 'Show Known Features'}
-        </button>
+        </Button>
       </div>
 
-      {/* optional loading indicator */}
       {visible && loading && (
         <div style={{ position: 'absolute', zIndex: 1000, right: 10, top: 100, background: 'rgba(255,255,255,0.9)', padding: 6, borderRadius: 4 }}>
           Loading markers...
         </div>
       )}
 
-      {/* render markers only when visible */}
       {visible && features.map((f, idx) => {
         const color = f.color ?? getColorForFeature(f.feature);
         return (

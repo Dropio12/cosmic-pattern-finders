@@ -320,7 +320,7 @@ export default function BoundingBoxes() {
           ) : (
             <>
               <Tag className="w-4 h-4 mr-2" />
-              Add Label
+              Add Feature
             </>
           )}
         </Button>
