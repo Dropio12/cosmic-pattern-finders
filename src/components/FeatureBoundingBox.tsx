@@ -4,6 +4,8 @@ import { Marker, Rectangle, useMapEvents } from 'react-leaflet'
 import L from 'leaflet'
 import { supabase } from '@/integrations/supabase/client'
 import { useAuth } from '@/hooks/useAuth'
+import { Button } from '@/components/ui/button'
+import { Tag, X } from 'lucide-react'
 
 type LatLng = { lat: number; lng: number }
 type Box = { id: number; bounds: [[number, number], [number, number]]; label: string; user_id: string | null }
@@ -185,18 +187,40 @@ export default function BoundingBoxes() {
 
   return (
     <>
-      <div style={{ position: 'absolute', zIndex: 1000, right: 10, top: 10 }}>
-        <button
+      <div className="absolute top-4 right-4 z-[1000] flex gap-2">
+        <Button
           onClick={() => {
             setDrawing((d) => !d)
             setStart(null)
             setMousePos(null)
           }}
-          style={{ marginRight: 8 }}
+          variant={drawing ? "secondary" : "default"}
+          size="sm"
+          className="glass-card shadow-lg"
         >
-          {drawing ? 'Cancel Label' : 'Add Label'}
-        </button>
-        {drawing && <button onClick={cancelDrawing}>Abort</button>}
+          {drawing ? (
+            <>
+              <X className="w-4 h-4 mr-2" />
+              Cancel
+            </>
+          ) : (
+            <>
+              <Tag className="w-4 h-4 mr-2" />
+              Add Label
+            </>
+          )}
+        </Button>
+        {drawing && start && (
+          <Button
+            onClick={cancelDrawing}
+            variant="destructive"
+            size="sm"
+            className="shadow-lg"
+          >
+            <X className="w-4 h-4 mr-2" />
+            Abort
+          </Button>
+        )}
       </div>
 
       {/* map events: click + mousemove for preview */}
