@@ -70,13 +70,45 @@ export default function BoundingBoxes() {
   const [mousePos, setMousePos] = useState<LatLng | null>(null)
   const [boxes, setBoxes] = useState<Box[]>([])
   const { user } = useAuth()
+  const [isAdmin, setIsAdmin] = useState(false)
+
+  // Check if user is admin
+  useEffect(() => {
+    const checkAdmin = async () => {
+      if (!user) {
+        setIsAdmin(false);
+        return;
+      }
+
+      const { data } = await supabase
+        .from('profiles')
+        .select('is_admin')
+        .eq('id', user.id)
+        .single();
+
+      setIsAdmin(data?.is_admin || false);
+    };
+
+    checkAdmin();
+  }, [user]);
 
   // Load zones from database on mount
   useEffect(() => {
     const loadZones = async () => {
-      const { data, error } = await supabase
-        .from('labels')
-        .select('*');
+      let query = supabase.from('labels').select('*');
+
+      if (isAdmin) {
+        // Admins see ALL zones
+        // No filter needed
+      } else if (user) {
+        // Logged-in users see: verified zones + their own non-verified zones
+        query = query.or(`verified.eq.true,user_id.eq.${user.id}`);
+      } else {
+        // Non-logged-in users see only verified zones
+        query = query.eq('verified', true);
+      }
+
+      const { data, error } = await query;
 
       if (error) {
         console.error('Error loading zones:', error);
@@ -107,7 +139,7 @@ export default function BoundingBoxes() {
     };
 
     loadZones();
-  }, []);
+  }, [user, isAdmin]);
 
   const saveZoneToDb = async (bounds: [[number, number], [number, number]], label: string) => {
     const corner1 = { lat: bounds[0][0], lng: bounds[0][1] };
