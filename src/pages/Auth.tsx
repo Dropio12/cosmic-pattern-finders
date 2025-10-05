@@ -218,7 +218,7 @@ const Auth = () => {
               </div>
               <Button 
                 type="submit" 
-                className="w-full bg-primary text-primary-foreground hover:bg-primary/90 shadow-none" 
+                className="w-full bg-[#FF6154] text-white hover:bg-[#FF6154]/90 border-0 shadow-sm font-medium" 
                 size="lg"
                 disabled={loading}
               >
@@ -276,7 +276,7 @@ const Auth = () => {
               </div>
               <Button 
                 type="submit" 
-                className="w-full bg-primary text-primary-foreground hover:bg-primary/90 shadow-none" 
+                className="w-full bg-[#FF6154] text-white hover:bg-[#FF6154]/90 border-0 shadow-sm font-medium" 
                 size="lg"
                 disabled={loading}
               >
