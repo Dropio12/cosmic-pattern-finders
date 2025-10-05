@@ -28,7 +28,6 @@ const MarsExplorer = () => {
 
   return (
     <div className="w-full h-screen relative">
-      {/* Back Button */}
       <Button
         onClick={() => navigate('/explore')}
         variant="secondary"
@@ -51,7 +50,7 @@ const MarsExplorer = () => {
           bounds={[[-90, -180], [90, 180]]}
           minZoom={1}
           maxZoom={7}
-          worldCopyJump={true}
+          // worldCopyJump={true}
         >
           <TileLayer
             url="https://trek.nasa.gov/tiles/Mars/EQ/Mars_Viking_MDIM21_ClrMosaic_global_232m/1.0.0//default/default028mm/{z}/{y}/{x}.jpg"

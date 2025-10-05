@@ -1,6 +1,8 @@
-import { Header } from "@/components/Header";
-import { InteractiveMap } from "@/components/InteractiveMap";
-import deepspaceMap from "@/assets/deepspace-map.jpg";
+import { useNavigate } from 'react-router-dom'
+import { MapContainer, TileLayer } from 'react-leaflet';
+import BoundingBoxes from '@/components/map/FeatureBoundingBoxSpace'
+import { Button } from '@/components/ui/button'
+import { ArrowLeft } from 'lucide-react'
 
 const deepspacePatterns = [
   { value: "galaxy", label: "Galaxy" },
@@ -28,18 +30,40 @@ const deepspacePatterns = [
 ];
 
 const DeepSpaceExplorer = () => {
+  const navigate = useNavigate();
+
   return (
-    <>
-      <Header />
-      <div className="fixed inset-0 top-20 bg-background">
-        <InteractiveMap 
-          mapImage={deepspaceMap}
-          title="Deep Space Pattern Explorer"
-          patternOptions={deepspacePatterns}
-          explorerType="deepspace"
-        />
+    <div className="w-full h-screen relative">
+      <Button
+        onClick={() => navigate('/explore')}
+        variant="secondary"
+        size="sm"
+        className="fixed bottom-6 left-6 z-[1000] glass-card shadow-lg"
+      >
+        <ArrowLeft className="w-4 h-4 mr-2" />
+        Back to Explore
+      </Button>
+
+      <div id="mars-map" className="w-full h-full">
+        <MapContainer
+          style={{ height: '100%', width: '100%' }}
+          center={[0, 0]}
+          zoom={1}
+          minZoom={1}
+          maxZoom={4}
+          // worldCopyJump={true}
+        >
+          <TileLayer
+            url="/deep-space-tiles/{z}/{x}/{y}.png"
+            attribution="NASA/JPL/GSFC"
+            tileSize={256}
+            noWrap={true}
+          />
+
+          <BoundingBoxes />
+        </MapContainer>
       </div>
-    </>
+    </div>
   );
 };
 
