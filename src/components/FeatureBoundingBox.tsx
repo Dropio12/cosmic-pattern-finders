@@ -151,6 +151,7 @@ export default function BoundingBoxes() {
         name: label,
         user_id: user?.id || null,
         position: { corner1, corner2 },
+        verified: isAdmin, // Admins' zones are automatically verified
       })
       .select()
       .single();
