@@ -1,10 +1,12 @@
 import './FeatureBoundingBox.css'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Marker, Rectangle, useMapEvents } from 'react-leaflet'
 import L from 'leaflet'
+import { Button } from '@/components/ui/button'
+import { Tag, X } from 'lucide-react'
 
 type LatLng = { lat: number; lng: number }
-type Box = { id: number; bounds: [[number, number], [number, number]]; label: string }
+type Box = { id: number; bounds: [[number, number], [number, number]]; label: string; user_id: string | null; verified: boolean }
 
 function escapeHtml(str: string) {
   return str
@@ -66,16 +68,30 @@ export default function BoundingBoxes() {
   const [mousePos, setMousePos] = useState<LatLng | null>(null)
   const [boxes, setBoxes] = useState<Box[]>([])
 
-  const handleMapClick = (p: LatLng) => {
+  const handleMapClick = async (p: LatLng) => {
     if (!start) {
       // first click: set start point
       setStart(p)
     } else {
       // second click: finalize box, prompt for label
       const bounds = makeBounds(start, p)
-      const label = window.prompt('Label for bounding box:', '') || ''
-      const box: Box = { id: Date.now(), bounds, label }
+      const labelInput = window.prompt('Label for bounding box (max 100 characters):', '') || '';
+      
+      // Validate label input
+      const label = labelInput.trim().slice(0, 100);
+      if (!label) {
+        console.error('Label cannot be empty');
+        setDrawing(false);
+        setStart(null);
+        return;
+      }
+    
+      const box = { 
+        bounds, 
+        label, 
+      }
       setBoxes((s) => [...s, box])
+      
       setStart(null)
       setMousePos(null)
       setDrawing(false)
@@ -90,18 +106,40 @@ export default function BoundingBoxes() {
 
   return (
     <>
-      <div style={{ position: 'absolute', zIndex: 1000, right: 10, top: 10 }}>
-        <button
+      <div className="absolute top-4 right-4 z-[1000] flex gap-2">
+        <Button
           onClick={() => {
             setDrawing((d) => !d)
             setStart(null)
             setMousePos(null)
           }}
-          style={{ marginRight: 8 }}
+          variant={drawing ? "secondary" : "default"}
+          size="sm"
+          className="glass-card shadow-lg"
         >
-          {drawing ? 'Cancel Label' : 'Add Label'}
-        </button>
-        {drawing && <button onClick={cancelDrawing}>Abort</button>}
+          {drawing ? (
+            <>
+              <X className="w-4 h-4 mr-2" />
+              Cancel
+            </>
+          ) : (
+            <>
+              <Tag className="w-4 h-4 mr-2" />
+              Add Feature
+            </>
+          )}
+        </Button>
+        {drawing && start && (
+          <Button
+            onClick={cancelDrawing}
+            variant="destructive"
+            size="sm"
+            className="shadow-lg"
+          >
+            <X className="w-4 h-4 mr-2" />
+            Abort
+          </Button>
+        )}
       </div>
 
       {/* map events: click + mousemove for preview */}
@@ -128,11 +166,13 @@ export default function BoundingBoxes() {
         })
         return (
           <div key={b.id}>
-            <Rectangle bounds={b.bounds} pathOptions={{ color: 'red' }} />
+            <Rectangle 
+              bounds={b.bounds} 
+              pathOptions={{ color: 'red' }}
+            />
             <Marker
               position={center}
               icon={icon}
-              interactive={false}
               keyboard={false}
               zIndexOffset={1000}
             />
