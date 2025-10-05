@@ -1,11 +1,28 @@
 /* visual label */
+.custom-bbox-icon {
+  pointer-events: none;
+}
+
 .custom-bbox-icon .bbox-label {
   width: max-content;
   transform: translate(-50%, -50%);
-  font-size: 24px;
-  color: #CCC;
+  font-size: 14px;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 4px 8px;
+  border: 1px solid red;
+  border-radius: 4px;
   font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  pointer-events: none;
+  white-space: nowrap;
+  pointer-events: auto;
+}
+
+.custom-bbox-icon .bbox-label.deletable {
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.custom-bbox-icon .bbox-label.deletable:hover {
+  background: rgba(255, 200, 200, 0.9);
 }
 
 /* ensure label does not get clipped by any leaflet defaults */

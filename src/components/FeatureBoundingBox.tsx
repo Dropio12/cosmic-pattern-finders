@@ -6,7 +6,7 @@ import { supabase } from '@/integrations/supabase/client'
 import { useAuth } from '@/hooks/useAuth'
 
 type LatLng = { lat: number; lng: number }
-type Box = { id: number; bounds: [[number, number], [number, number]]; label: string }
+type Box = { id: number; bounds: [[number, number], [number, number]]; label: string; user_id: string | null }
 
 function escapeHtml(str: string) {
   return str
@@ -97,6 +97,7 @@ export default function BoundingBoxes() {
               id: zone.id,
               bounds,
               label: zone.name,
+              user_id: zone.user_id,
             };
           });
         setBoxes(loadedBoxes);
@@ -131,7 +132,7 @@ export default function BoundingBoxes() {
       // second click: finalize box, prompt for label
       const bounds = makeBounds(start, p)
       const label = window.prompt('Label for bounding box:', '') || ''
-      const box: Box = { id: Date.now(), bounds, label }
+      const box: Box = { id: Date.now(), bounds, label, user_id: user?.id || null }
       setBoxes((s) => [...s, box])
       
       // Save to database
@@ -140,6 +141,26 @@ export default function BoundingBoxes() {
       setStart(null)
       setMousePos(null)
       setDrawing(false)
+    }
+  }
+
+  const handleZoneClick = async (box: Box) => {
+    if (!drawing && box.user_id === user?.id) {
+      const confirmed = window.confirm(`Delete zone "${box.label}"?`);
+      if (confirmed) {
+        // Delete from database
+        const { error } = await supabase
+          .from('labels')
+          .delete()
+          .eq('id', box.id);
+        
+        if (error) {
+          console.error('Error deleting zone:', error);
+        } else {
+          // Remove from local state
+          setBoxes(boxes.filter(b => b.id !== box.id));
+        }
+      }
     }
   }
 
@@ -179,23 +200,33 @@ export default function BoundingBoxes() {
       {/* render saved boxes */}
       {boxes.map((b) => {
         const center = centerOfBounds(b.bounds)
+        const canDelete = b.user_id === user?.id
         // divIcon for label (styled via CSS). sanitize label.
         const safeLabel = escapeHtml(b.label || '')
         const icon = L.divIcon({
           className: 'custom-bbox-icon', // container class
-          html: `<div class="bbox-label">${safeLabel}</div>`,
+          html: `<div class="bbox-label ${canDelete ? 'deletable' : ''}">${safeLabel}</div>`,
           iconSize: undefined,
           iconAnchor: [0, 0],
         })
         return (
           <div key={b.id}>
-            <Rectangle bounds={b.bounds} pathOptions={{ color: 'red' }} />
+            <Rectangle 
+              bounds={b.bounds} 
+              pathOptions={{ color: 'red' }}
+              eventHandlers={{
+                click: () => handleZoneClick(b)
+              }}
+            />
             <Marker
               position={center}
               icon={icon}
-              interactive={false}
+              interactive={canDelete}
               keyboard={false}
               zIndexOffset={1000}
+              eventHandlers={canDelete ? {
+                click: () => handleZoneClick(b)
+              } : undefined}
             />
           </div>
         )
